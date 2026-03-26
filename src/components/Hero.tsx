@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
+import heroImage from "@/assets/hero-systems.jpg";
 
 const Hero = () => {
   return (
@@ -44,6 +45,22 @@ const Hero = () => {
               Aplicar Ahora
               <ArrowRight size={16} />
             </a>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mt-16 max-w-5xl mx-auto"
+        >
+          <div className="glass rounded-2xl p-2 glow-primary">
+            <img
+              src={heroImage}
+              alt="Sistema de automatización transformando operaciones de negocio"
+              className="rounded-xl w-full object-cover"
+              loading="lazy"
+            />
           </div>
         </motion.div>
       </div>

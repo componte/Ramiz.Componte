@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Monitor, Workflow, Database, Brain, Settings } from "lucide-react";
+import techImage from "@/assets/tech-architecture.jpg";
 
 const tech = [
   { icon: Monitor, label: "Interfaces modernas" },
@@ -42,6 +43,22 @@ const TechStack = () => {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 max-w-4xl mx-auto"
+        >
+          <div className="glass rounded-2xl p-2">
+            <img
+              src={techImage}
+              alt="Arquitectura tecnológica: Automatización, Backend Logic, Interfaces y Database"
+              className="rounded-xl w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        </motion.div>
       </div>
     </section>
   );
