@@ -6,7 +6,7 @@ const contactMethods = [
     icon: MessageCircle,
     title: "WhatsApp",
     description: "Escríbeme directamente",
-    href: "https://wa.me/",
+    href: "https://wa.me/584241850638",
     cta: "Enviar mensaje",
   },
   {
@@ -20,7 +20,7 @@ const contactMethods = [
     icon: Mail,
     title: "Email",
     description: "Envía tu consulta",
-    href: "mailto:contacto@ramiz.com",
+    href: "mailto:componte.ve@gmail.com",
     cta: "Enviar email",
   },
 ];
