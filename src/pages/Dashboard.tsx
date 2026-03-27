@@ -178,7 +178,11 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
       id="inicio"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pt-20 text-center"
     >
-      <ParticleTextEffect />
+      <div className="pointer-events-none absolute left-1/2 top-[56%] z-0 h-[190px] w-[1100px] max-w-[95vw] -translate-x-1/2 opacity-55 mix-blend-screen sm:h-[220px] md:top-[58%] md:h-[240px]">
+        <div className="relative h-full w-full">
+          <ParticleTextEffect />
+        </div>
+      </div>
       <div className="absolute left-[20%] top-[10%] h-[500px] w-[500px] animate-[spin_20s_linear_infinite] rounded-full bg-purple-700/10 blur-[150px]" />
       <div className="absolute right-[20%] bottom-[10%] h-[600px] w-[600px] animate-[spin_25s_linear_infinite_reverse] rounded-full bg-purple-900/10 blur-[150px]" />
 
@@ -263,7 +267,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
                 title: "Retail",
                 user: "Mano, ¿de casualidad tienes audífonos inalámbricos negros?",
                 assistant:
-                  "¡Épale bro! Sí activo, nos quedan 3 orginales negros en $25. ¿Te aparto uno de una vez o quieres que te pase fotos?",
+                  "¡Épale hermano! Sí activo, nos quedan 3 orginales negros en $25. ¿Te aparto uno de una vez o quieres que te pase fotos?",
               },
             ].map((c, idx) => (
               <motion.div
@@ -567,7 +571,11 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
           const Icon = s.icon;
           const isAccent = index === 0;
           return (
-            <motion.div key={s.id} variants={fadeScale} className="border-r border-b border-gray-800 bg-[#050507] group relative flex h-full flex-col transition-all hover:bg-[rgba(255,255,255,0.02)]">
+            <motion.div key={s.id} variants={fadeScale} className="border-r border-b border-gray-800 bg-[#050507] group relative flex h-full flex-col overflow-hidden transition-all hover:bg-[rgba(255,255,255,0.02)]">
+              <div className="pointer-events-none absolute inset-0 opacity-45 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-70">
+                <div className="absolute -inset-px bg-gradient-to-br from-purple-500/12 via-cyan-500/10 to-transparent" />
+                <div className="absolute inset-0 shimmer opacity-15" />
+              </div>
               <div className="p-8">
                 <div className="flex justify-between items-start">
                   <div className={`mb-6 flex h-14 w-14 items-center justify-center border ${isAccent ? 'border-purple-500 bg-purple-500/10 text-purple-400' : 'border-gray-700 bg-white/5 text-gray-400'}`}>
@@ -1288,32 +1296,51 @@ const ChatWidget = () => {
         )}
       </AnimatePresence>
 
-      <motion.button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 420, damping: 24 }}
-        className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-purple-600/90 to-cyan-600/80 text-white shadow-[0_22px_60px_rgba(0,0,0,0.65)]"
-        aria-label={open ? "Cerrar chat" : "Abrir chat"}
-      >
-        <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500/55 via-cyan-500/45 to-purple-500/55 opacity-80 blur" />
-        <div className="relative flex h-full w-full overflow-hidden rounded-2xl items-center justify-center">
-          {open ? (
-            <X className="h-8 w-8" />
-          ) : (
-            <img
-              src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
-              alt="Agente Avatar"
-              className="h-full w-full object-cover"
-            />
-          )}
+      <div className="group relative">
+        <div className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2">
+          <div className="hidden rounded-2xl border border-white/10 bg-black/65 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.6)] opacity-0 translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 md:block">
+            ¿Te ayudo a elegir?
+          </div>
+          <div className="md:hidden rounded-2xl border border-white/10 bg-black/55 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl">
+            Habla con el agente
+          </div>
         </div>
 
-        <span className="pointer-events-none z-10 absolute -top-2 right-1 rounded-full border border-white/10 bg-black/60 px-2 py-0.5 text-[12px] font-semibold text-white/90 backdrop-blur">
-          Agente
-        </span>
-      </motion.button>
+        <motion.button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 420, damping: 24 }}
+          className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-purple-600/90 to-cyan-600/80 text-white shadow-[0_22px_60px_rgba(0,0,0,0.65)]"
+          aria-label={open ? "Cerrar chat" : "Abrir chat"}
+        >
+          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500/60 via-cyan-500/50 to-purple-500/60 opacity-90 blur" />
+          <div className="pointer-events-none absolute -inset-3 rounded-[22px] bg-purple-500/20 blur-xl opacity-60 animate-pulse" />
+          <div className="pointer-events-none absolute -inset-2 rounded-[22px] border border-purple-400/30" />
+
+          <div className="relative flex h-full w-full overflow-hidden rounded-2xl items-center justify-center">
+            {open ? (
+              <X className="h-8 w-8" />
+            ) : (
+              <img
+                src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
+                alt="Agente Avatar"
+                className="h-full w-full object-cover"
+              />
+            )}
+
+            <span className="absolute bottom-2 right-2 flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-35" />
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-green-400 ring-2 ring-black/60" />
+            </span>
+          </div>
+
+          <span className="pointer-events-none z-10 absolute -top-2 right-1 rounded-full border border-white/10 bg-black/60 px-2 py-0.5 text-[12px] font-semibold text-white/90 backdrop-blur">
+            Agente
+          </span>
+        </motion.button>
+      </div>
     </div>
   );
 };
