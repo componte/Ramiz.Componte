@@ -189,7 +189,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
 
         <motion.h1
           variants={fadeInUp}
-          className="mb-8 text-6xl font-black tracking-tighter text-white md:text-8xl lg:text-[110px] leading-[0.9]"
+          className="mb-8 text-5xl font-black tracking-tighter text-white sm:text-7xl lg:text-[90px] leading-[0.9]"
         >
           <motion.span 
             animate={{ 
@@ -237,15 +237,44 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
           </Button>
         </motion.div>
 
-        {/* HERO IMAGE PLACEHOLDER */}
-        <motion.div variants={fadeInUp} className="mt-16 sm:mt-24 mx-auto w-full max-w-5xl">
-          <div className="relative aspect-video w-full border border-dashed border-gray-700 bg-black/40 flex flex-col items-center justify-center text-gray-500">
-            <div className="w-16 h-16 border rounded-full border-gray-600 flex items-center justify-center mb-4">
-              <span className="text-2xl">?</span>
+        {/* HERO WHATSAPP MOCKUP */}
+        <motion.div variants={fadeInUp} className="mt-16 sm:mt-24 mx-auto w-full max-w-sm sm:max-w-md" style={{ perspective: "1000px" }}>
+          <motion.div 
+            initial={{ rotateX: 10, rotateY: -10, opacity: 0 }}
+            animate={{ rotateX: 0, rotateY: 0, opacity: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="relative rounded-xl border border-gray-800 bg-[#0a0a0c] p-4 sm:p-6 shadow-2xl flex flex-col gap-5 text-left transform-gpu"
+          >
+            <div className="flex items-center gap-3 border-b border-gray-800 pb-4">
+              <div className="h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />
+              </div>
+              <div>
+                <p className="text-sm sm:text-base font-bold text-white tracking-wide">Agente Inteligente</p>
+                <p className="text-[10px] sm:text-xs text-green-500 font-semibold tracking-widest uppercase flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> en línea
+                </p>
+              </div>
             </div>
-            <span className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Espacio de Animación Central</span>
-            <span className="text-xs text-gray-500">Aquí incorporaremos la imagen o animación de fondo en el futuro</span>
-          </div>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, x: 20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ delay: 1, duration: 0.5, type: "spring" }}
+              className="self-end rounded-2xl rounded-tr-none bg-purple-600/10 border border-purple-500/20 p-3 sm:p-4 max-w-[85%]"
+            >
+              <p className="text-sm sm:text-base text-gray-200 leading-relaxed font-light">¡Hola! ¿Cuánto tiene de deuda el cliente X?</p>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, x: -20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ delay: 2.5, duration: 0.5, type: "spring" }}
+              className="self-start rounded-2xl rounded-tl-none bg-white/5 border border-gray-800 p-3 sm:p-4 max-w-[90%]"
+            >
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-light">¡Claro! El cliente X tiene una deuda de <strong className="text-white">$45</strong>. ¿Quieres que le envíe un mensaje de recordatorio automático ahora mismo?</p>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </motion.div>
 
@@ -507,10 +536,7 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
                   </div>
                 </div>
                 
-                {/* SERVICES IMAGE PLACEHOLDER */}
-                <div className="mb-6 w-full h-32 border border-dashed border-gray-800 bg-[#07070a] flex items-center justify-center text-center p-3 opacity-60">
-                  <span className="text-[9px] font-bold uppercase tracking-widest text-gray-600">Espacio Visual<br/>Secundario</span>
-                </div>
+
 
                 <h3 className="mb-3 text-xl font-bold tracking-tight text-white">{s.title}</h3>
                 <p className="mb-6 text-sm font-light leading-relaxed text-gray-400">{s.description}</p>
@@ -533,13 +559,18 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
               <div className="mt-auto px-8 pb-8">
                 <Button
                  variant="ghost"
-                 className={`w-full h-14 rounded-none border ${isAccent ? 'border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white' : 'border-gray-800 bg-transparent text-gray-400 hover:bg-white hover:text-black'} text-xs md:text-sm font-bold uppercase tracking-widest transition-all`}
+                 disabled={s.id === "reports"}
+                 className={`w-full h-14 rounded-none border ${isAccent ? 'border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white' : 'border-gray-800 bg-transparent text-gray-400 hover:bg-white hover:text-black'} text-xs md:text-sm font-bold uppercase tracking-widest transition-all ${s.id === 'reports' ? 'opacity-30 cursor-not-allowed' : ''}`}
                  onClick={() => {
-                   triggerProgress();
-                   document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
+                   if (s.id !== "reports") {
+                     triggerProgress();
+                     document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
+                   }
                  }}
                 >
-                  Quiero esto <ArrowRight className="ml-2 h-4 w-4" />
+                  {s.id === "reports" ? "PRÓXIMAMENTE" : (
+                    <>Quiero esto <ArrowRight className="ml-2 h-4 w-4" /></>
+                  )}
                 </Button>
               </div>
             </motion.div>
@@ -1073,9 +1104,19 @@ const TradingCard = () => {
             </div>
 
             <div className="w-full border border-gray-800 bg-black/40 p-5 mt-auto text-left">
-              <p className="mb-3 text-xs md:text-sm font-bold text-gray-500">PERFIL CONFIDENCIAL</p>
-              <div className="flex h-32 w-full items-center justify-center bg-[#030304] border-t border-gray-800">
-                <span className="text-xs font-bold tracking-[0.2em] text-gray-500 text-center">FOTOGRAFÍA<br/>PENDIENTE</span>
+              <div className="grid grid-cols-3 gap-2 divide-x divide-gray-800 text-center">
+                <div>
+                  <p className="text-xl md:text-2xl font-black text-purple-400">+12</p>
+                  <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Sistemas</p>
+                </div>
+                <div>
+                  <p className="text-xl md:text-2xl font-black text-purple-400">100%</p>
+                  <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Uptime</p>
+                </div>
+                <div>
+                  <p className="text-xl md:text-2xl font-black text-purple-400">24/7</p>
+                  <p className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Operación</p>
+                </div>
               </div>
             </div>
           </div>
