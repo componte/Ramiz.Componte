@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { ShaderAnimation } from "../components/ui/shader-lines";
+import { ParticleTextEffect } from "../components/ui/particle-text-effect";
 import {
   BarChart,
   Bar,
@@ -176,6 +178,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
       id="inicio"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pt-20 text-center"
     >
+      <ParticleTextEffect />
       <div className="absolute left-[20%] top-[10%] h-[500px] w-[500px] animate-[spin_20s_linear_infinite] rounded-full bg-purple-700/10 blur-[150px]" />
       <div className="absolute right-[20%] bottom-[10%] h-[600px] w-[600px] animate-[spin_25s_linear_infinite_reverse] rounded-full bg-purple-900/10 blur-[150px]" />
 
@@ -514,16 +517,20 @@ const services = [
 ];
 
 const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) => (
-  <section id="sistemas" className="relative z-10 mx-auto max-w-7xl px-4 py-24">
-    <div className="absolute top-0 h-px w-full bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
-    <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={staggerContainer}>
+  <section id="sistemas" className="relative z-10 mx-auto max-w-7xl px-4 py-24 overflow-hidden rounded-3xl">
+    <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none">
+      <ShaderAnimation />
+    </div>
+    <div className="absolute inset-0 bg-gradient-to-t from-[#050507] via-transparent to-[#050507] z-0 pointer-events-none" />
+    <div className="absolute top-0 h-px w-full bg-gradient-to-r from-transparent via-purple-500/30 to-transparent z-10" />
+    <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={staggerContainer} className="relative z-10">
       <motion.div variants={fadeInUp} className="mb-20 text-center">
         <h2 className="text-5xl font-black md:text-6xl tracking-tighter">
           Lo que <span className="text-purple-500">Construyo</span>.
         </h2>
         <p className="mt-4 text-lg font-light text-gray-400">Elige el tipo de solución que necesita tu negocio.</p>
       </motion.div>
-      <div className="grid gap-0 md:grid-cols-2 lg:grid-cols-4 border-l border-t border-gray-800">
+      <div className="grid gap-0 md:grid-cols-2 lg:grid-cols-4 border-l border-t border-gray-800 bg-[#050507]/60 backdrop-blur-md">
         {services.map((s, index) => {
           const Icon = s.icon;
           const isAccent = index === 0;
