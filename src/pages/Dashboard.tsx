@@ -182,7 +182,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
       <motion.div variants={staggerContainer} initial="hidden" animate="show" className="relative z-10 max-w-5xl">
         <motion.div
           variants={fadeInUp}
-          className="mb-8 inline-flex items-center border-b border-purple-500/30 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-purple-400"
+          className="mb-8 inline-flex items-center border-b border-purple-500/30 pb-2 text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-purple-400"
         >
           Automatización + Sitios Web con Lógica
         </motion.div>
@@ -340,26 +340,26 @@ const SuccessCases = ({ triggerProgress }: { triggerProgress: () => void }) => {
 
                 <div className="grid gap-6 lg:grid-cols-2">
                   <div>
-                    <p className="mb-4 border-b border-red-900/30 pb-3 text-xs md:text-sm font-bold uppercase tracking-wider text-red-500">
+                    <p className="mb-5 border-b border-red-900/30 pb-3 text-sm md:text-base font-bold uppercase tracking-wider text-red-500">
                       Antes del agente
                     </p>
-                    <ul className="space-y-4">
+                    <ul className="space-y-5">
                       {beforePoints.map((p, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm leading-relaxed text-gray-400">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-red-500/50" />
+                        <li key={i} className="flex items-start gap-4 text-base md:text-lg leading-relaxed text-gray-400">
+                          <span className="mt-2 h-2 w-2 shrink-0 bg-red-500/50" />
                           {p}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <p className="mb-4 border-b border-purple-900/40 pb-3 text-xs md:text-sm font-bold uppercase tracking-wider text-purple-400">
+                    <p className="mb-5 border-b border-purple-900/40 pb-3 text-sm md:text-base font-bold uppercase tracking-wider text-purple-400">
                       Con el agente activo
                     </p>
-                    <ul className="space-y-4">
+                    <ul className="space-y-5">
                       {afterPoints.map((p, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm leading-relaxed text-gray-300">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-purple-500" />
+                        <li key={i} className="flex items-start gap-4 text-base md:text-lg leading-relaxed text-gray-300">
+                          <span className="mt-2 h-2 w-2 shrink-0 bg-purple-500" />
                           {p}
                         </li>
                       ))}
@@ -517,13 +517,13 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
                 
                 <ul className="mb-8 space-y-3">
                   {s.features.slice(0, 3).map((f, i) => (
-                    <li key={i} className="flex items-start gap-3 text-xs font-light text-gray-300">
-                      <span className={`mt-1.5 h-1 w-1 shrink-0 ${isAccent ? 'bg-purple-500' : 'bg-gray-600'}`} />
+                    <li key={i} className="flex items-start gap-3 text-sm md:text-base font-light text-gray-300">
+                      <span className={`mt-2 h-1.5 w-1.5 shrink-0 ${isAccent ? 'bg-purple-500' : 'bg-gray-500'}`} />
                       {f}
                     </li>
                   ))}
                   {s.features.length > 3 && (
-                    <li className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 pt-2">
+                    <li className="flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-widest text-gray-400 pt-2">
                        +{s.features.length - 3} Características
                     </li>
                   )}
@@ -533,7 +533,7 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
               <div className="mt-auto px-8 pb-8">
                 <Button
                  variant="ghost"
-                 className={`w-full h-12 rounded-none border ${isAccent ? 'border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white' : 'border-gray-800 bg-transparent text-gray-400 hover:bg-white hover:text-black'} text-[10px] font-bold uppercase tracking-widest transition-all`}
+                 className={`w-full h-14 rounded-none border ${isAccent ? 'border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white' : 'border-gray-800 bg-transparent text-gray-400 hover:bg-white hover:text-black'} text-xs md:text-sm font-bold uppercase tracking-widest transition-all`}
                  onClick={() => {
                    triggerProgress();
                    document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
@@ -1057,25 +1057,25 @@ const TradingCard = () => {
         <div className="trading-card border-t-4 border-purple-500/80 bg-[#050507] p-8 lg:p-10 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]">
           <div className="relative z-10 flex flex-col uppercase tracking-widest text-left">
             <h3 className="text-4xl font-black text-white mb-1 tracking-tighter normal-case">@Ramiz.Componte</h3>
-            <p className="text-[10px] font-bold text-gray-500 mb-8">Arquitecto de Automatización</p>
+            <p className="text-xs md:text-sm font-bold text-gray-500 mb-8">Arquitecto de Automatización</p>
             
             <div className="h-px w-full bg-gray-800 mb-8" />
 
-            <div className="gap-4 text-[10px] font-bold text-gray-600 mb-8">
+            <div className="gap-4 text-xs md:text-sm font-bold text-gray-600 mb-8">
               <div>
                 <p className="text-purple-400 mb-3 uppercase tracking-widest">Especialidad Central</p>
-                <ul className="text-white space-y-2 normal-case text-xs tracking-normal font-light">
-                  <li className="flex items-center gap-2"><span className="w-1 h-1 bg-purple-500"/> Agentes de Inteligencia Artificial</li>
-                  <li className="flex items-center gap-2"><span className="w-1 h-1 bg-purple-500"/> Sitios Web con Lógica Aplicada</li>
-                  <li className="flex items-center gap-2"><span className="w-1 h-1 bg-purple-500"/> Automatización Integral de Negocios</li>
+                <ul className="text-white space-y-3 normal-case text-sm tracking-normal font-light">
+                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-purple-500"/> Agentes de Inteligencia Artificial</li>
+                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-purple-500"/> Sitios Web con Lógica Aplicada</li>
+                  <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-purple-500"/> Automatización Integral de Negocios</li>
                 </ul>
               </div>
             </div>
 
             <div className="w-full border border-gray-800 bg-black/40 p-5 mt-auto text-left">
-              <p className="mb-3 text-[9px] font-bold text-gray-500">PERFIL CONFIDENCIAL</p>
+              <p className="mb-3 text-xs md:text-sm font-bold text-gray-500">PERFIL CONFIDENCIAL</p>
               <div className="flex h-32 w-full items-center justify-center bg-[#030304] border-t border-gray-800">
-                <span className="text-[10px] font-light tracking-[0.3em] text-gray-600 text-center">FOTOGRAFÍA<br/>PENDIENTE</span>
+                <span className="text-xs font-bold tracking-[0.2em] text-gray-500 text-center">FOTOGRAFÍA<br/>PENDIENTE</span>
               </div>
             </div>
           </div>
