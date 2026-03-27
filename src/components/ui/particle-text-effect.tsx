@@ -147,7 +147,8 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }: ParticleTextEffect
     offscreenCtx.font = `900 ${fontSize}px "Inter", sans-serif`
     offscreenCtx.textAlign = "center"
     offscreenCtx.textBaseline = "middle"
-    offscreenCtx.fillText(word, canvas.width / 2, canvas.height / 2)
+    // Dibujar la palabra un poco más abajo del centro (75% de la altura)
+    offscreenCtx.fillText(word, canvas.width / 2, canvas.height * 0.75)
 
     const imageData = offscreenCtx.getImageData(0, 0, canvas.width, canvas.height)
     const pixels = imageData.data
@@ -253,7 +254,7 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }: ParticleTextEffect
     }
 
     frameCountRef.current++
-    if (frameCountRef.current % 300 === 0) { // Change word every ~5 seconds
+    if (frameCountRef.current % 500 === 0) { // Change word every ~8.5 seconds so they hold the shape longer
       wordIndexRef.current = (wordIndexRef.current + 1) % words.length
       nextWord(words[wordIndexRef.current], canvas)
     }

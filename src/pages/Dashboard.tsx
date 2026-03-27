@@ -207,7 +207,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
           <br className="hidden md:block" /> tu negocio por ti.
         </motion.h1>
 
-        <motion.p variants={fadeInUp} className="mb-10 mx-auto max-w-2xl text-xl font-light leading-relaxed text-gray-400 md:text-2xl">
+        <motion.p variants={fadeInUp} className="mb-10 mx-auto max-w-2xl text-xl font-medium leading-relaxed text-gray-200 md:text-2xl bg-[#050507]/80 backdrop-blur-md px-6 py-4 rounded-xl border border-white/5 shadow-2xl">
           Diseño e implemento sistemas que automatizan procesos, estructuran información y permiten que tu negocio funcione con menos fricción.
         </motion.p>
 
