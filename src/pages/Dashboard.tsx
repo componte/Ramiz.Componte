@@ -207,7 +207,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
           <br className="hidden md:block" /> tu negocio por ti.
         </motion.h1>
 
-        <motion.p variants={fadeInUp} className="mb-10 mx-auto max-w-2xl text-xl font-medium leading-relaxed text-gray-200 md:text-2xl bg-[#050507]/80 backdrop-blur-md px-6 py-4 rounded-xl border border-white/5 shadow-2xl">
+        <motion.p variants={fadeInUp} className="mb-10 mx-auto max-w-2xl text-xl font-light leading-relaxed text-gray-400 md:text-2xl drop-shadow-xl">
           Diseño e implemento sistemas que automatizan procesos, estructuran información y permiten que tu negocio funcione con menos fricción.
         </motion.p>
 
@@ -253,7 +253,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
                 <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />
               </div>
               <div>
-                <p className="text-sm sm:text-base font-bold text-white tracking-wide">Agente Inteligente</p>
+                <p className="text-sm sm:text-base font-bold text-white tracking-wide">Vendedor Inteligente</p>
                 <p className="text-[10px] sm:text-xs text-green-500 font-semibold tracking-widest uppercase flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> en línea
                 </p>
@@ -266,7 +266,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
               transition={{ delay: 1, duration: 0.5, type: "spring" }}
               className="self-end rounded-2xl rounded-tr-none bg-purple-600/10 border border-purple-500/20 p-3 sm:p-4 max-w-[85%]"
             >
-              <p className="text-sm sm:text-base text-gray-200 leading-relaxed font-light">¡Hola! ¿Cuánto tiene de deuda el cliente X?</p>
+              <p className="text-sm sm:text-base text-gray-200 leading-relaxed font-light">Mano, ¿de casualidad tienes audífonos inalámbricos negros?</p>
             </motion.div>
             
             <motion.div 
@@ -275,7 +275,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
               transition={{ delay: 2.5, duration: 0.5, type: "spring" }}
               className="self-start rounded-2xl rounded-tl-none bg-white/5 border border-gray-800 p-3 sm:p-4 max-w-[90%]"
             >
-              <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-light">¡Claro! El cliente X tiene una deuda de <strong className="text-white">$45</strong>. ¿Quieres que le envíe un mensaje de recordatorio automático ahora mismo?</p>
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-light">¡Épale bro! Sí activo, nos quedan 3 orginales negros en <strong className="text-white">$25</strong>. ¿Te aparto uno de una vez o quieres que te pase fotos?</p>
             </motion.div>
           </motion.div>
         </motion.div>
