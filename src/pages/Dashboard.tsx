@@ -805,7 +805,7 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
         className="border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl md:p-12 transition-all relative overflow-hidden"
       >
         <div className="mb-14 border-b border-gray-800 pb-8 text-center">
-          <h2 className="mb-2 text-4xl font-black md:text-5xl">Diagnóstico RAMIZ</h2>
+          <h2 className="mb-2 text-4xl font-black md:text-5xl">Diagnóstico</h2>
           <p className="text-gray-400">Responde esto y te digo el siguiente paso exacto.</p>
         </div>
 
@@ -906,11 +906,6 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                         </div>
                         <p className="text-sm font-bold text-white">{p.label}</p>
                         <p className="mt-1 text-xs text-gray-400">{p.desc}</p>
-                        {p.id === "Business" && (
-                          <span className="mt-4 inline-flex items-center rounded-full border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-purple-300">
-                            Prioridad Alpha
-                          </span>
-                        )}
                       </button>
                     );
                   })}
@@ -1019,7 +1014,9 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                           key={o.id}
                           type="button"
                           onClick={() => setBusiness((p) => ({ ...p, hasWaba: o.id as any }))}
-                          className={`rounded-2xl border px-6 py-5 text-left transition-all ${business.hasWaba === o.id ? "border-purple-500/50 bg-purple-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}
+                          className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                            business.hasWaba === o.id ? "border-purple-500/50 bg-purple-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                          }`}
                         >
                           <p className="text-sm font-bold text-white">{o.label}</p>
                         </button>
@@ -1049,7 +1046,9 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                         key={o.id}
                         type="button"
                         onClick={() => setBusiness((p) => ({ ...p, budget: o.id as BusinessBudget }))}
-                        className={`rounded-2xl border px-6 py-5 text-left transition-all ${business.budget === o.id ? "border-cyan-500/50 bg-cyan-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}
+                        className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                          business.budget === o.id ? "border-cyan-500/50 bg-cyan-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                        }`}
                       >
                         <p className="text-sm font-bold text-white">{o.label}</p>
                       </button>
@@ -1389,7 +1388,7 @@ const ChatWidget = () => {
     {
       id: "a1",
       role: "assistant",
-      text: "¿Te digo la verdad? En 60 segundos el Diagnóstico RAMIZ me da el contexto y yo te digo el siguiente paso exacto. Si quieres, arranca por ahí.",
+      text: "¿Te digo la verdad? En 60 segundos el Diagnóstico me da el contexto y yo te digo el siguiente paso exacto. Si quieres, arranca por ahí.",
     },
   ]);
 
@@ -1407,7 +1406,7 @@ const ChatWidget = () => {
       return "Un agente puede atender, calificar y derivar. Lo bonito es que no es solo conversar: también captura datos y ejecuta acciones (sin molestar al equipo).";
     }
     if (text.trim().length > 180) {
-      return "Buen contexto. Para responderte fino, lo mejor es que lo pases por el Diagnóstico RAMIZ: así lo convierto en un plan con pasos claros.";
+      return "Buen contexto. Para responderte fino, lo mejor es que lo pases por el Diagnóstico: así lo convierto en un plan con pasos claros.";
     }
     return "Suena bien. ¿Eso hoy te quita tiempo, te hace perder ventas, o te genera errores?";
   };
@@ -1546,7 +1545,7 @@ const ChatWidget = () => {
                         {
                           id: "a1",
                           role: "assistant",
-                          text: "¿Te digo la verdad? En 60 segundos el Diagnóstico RAMIZ me da el contexto y yo te digo el siguiente paso exacto. Si quieres, arranca por ahí.",
+                          text: "¿Te digo la verdad? En 60 segundos el Diagnóstico me da el contexto y yo te digo el siguiente paso exacto. Si quieres, arranca por ahí.",
                         },
                       ]);
                       setInput("");
@@ -1564,7 +1563,7 @@ const ChatWidget = () => {
         <div className="group relative">
           <div className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2">
             <div className="hidden rounded-2xl border border-white/10 bg-black/65 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.6)] opacity-0 translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 md:block">
-              Haz el Diagnóstico RAMIZ
+              Haz el Diagnóstico
             </div>
             <div className="md:hidden rounded-2xl border border-white/10 bg-black/55 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl">
               Diagnóstico
