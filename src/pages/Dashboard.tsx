@@ -878,11 +878,10 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
             ) : step === 0 ? (
               <motion.div key="pick" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <h3 className="mb-6 text-2xl font-bold tracking-tight text-white">¿Cuál es tu perfil actual?</h3>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2">
                   {[
                     { id: "Business", label: "Dueño de Negocio", icon: Globe, desc: "Quiero ahorrar tiempo y vender más" },
                     { id: "Agency", label: "Freelancer / Agencia", icon: User, desc: "Quiero escalar resultados sin caos" },
-                    { id: "Student", label: "Estudiante / Curioso", icon: GraduationCap, desc: "Quiero aprender cómo se construye" },
                   ].map((p) => {
                     const I = p.icon;
                     return (
@@ -910,9 +909,27 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                     );
                   })}
                 </div>
-                <div className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-4 text-sm text-white/80">
-                  ¿Quieres aprender a construir esto? <span className="text-purple-300 font-semibold">Únete a la lista de espera.</span>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSegment("Student");
+                    triggerProgress();
+                    setStep(1);
+                  }}
+                  className="mt-6 w-full rounded-2xl border border-white/10 bg-black/20 p-4 text-left text-sm text-white/80 transition-colors hover:bg-white/[0.03]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Lista de espera</p>
+                      <p className="mt-1">
+                        ¿Quieres aprender a construir esto? <span className="text-purple-300 font-semibold">Únete aquí</span>.
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/80">
+                      Entrar
+                    </span>
+                  </div>
+                </button>
               </motion.div>
             ) : segment === "Student" ? (
               <motion.div key="student" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
