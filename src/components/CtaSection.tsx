@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const CtaSection = () => {
   return (
@@ -18,13 +19,13 @@ const CtaSection = () => {
           <p className="text-muted-foreground mb-8">
             Trabajo con negocios que ya tienen volumen operativo
           </p>
-          <a
-            href="#contacto"
+          <Link
+            to="/contacto"
             className="inline-flex items-center gap-2 gradient-primary text-primary-foreground px-8 py-4 rounded-xl font-medium hover:opacity-90 transition-opacity text-lg"
           >
             Aplicar para Automatización
             <ArrowRight size={20} />
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>

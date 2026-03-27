@@ -1,10 +1,16 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Play } from "lucide-react";
-import heroImage from "@/assets/hero-systems.jpg";
+import { Link } from "react-router-dom";
+import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
   return (
     <section id="inicio" className="relative min-h-screen flex items-center justify-center dot-pattern overflow-hidden">
+      <div
+        className="absolute inset-0 bg-center bg-cover"
+        style={{ backgroundImage: `url(${heroBg})` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/70 to-background" />
       {/* Glow orb */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px] animate-pulse-glow pointer-events-none" />
 
@@ -38,29 +44,13 @@ const Hero = () => {
               <Play size={16} className="text-primary" />
               Ver Cómo Funciona
             </a>
-            <a
-              href="#contacto"
+            <Link
+              to="/contacto"
               className="flex items-center gap-2 gradient-primary text-primary-foreground px-6 py-3.5 rounded-lg font-medium hover:opacity-90 transition-opacity glow-primary"
             >
               Aplicar Ahora
               <ArrowRight size={16} />
-            </a>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="mt-16 max-w-5xl mx-auto"
-        >
-          <div className="glass rounded-2xl p-2 glow-primary">
-            <img
-              src={heroImage}
-              alt="Sistema de automatización transformando operaciones de negocio"
-              className="rounded-xl w-full object-cover"
-              loading="lazy"
-            />
+            </Link>
           </div>
         </motion.div>
       </div>

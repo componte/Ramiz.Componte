@@ -9,8 +9,26 @@ import Differentiator from "@/components/Differentiator";
 import CtaSection from "@/components/CtaSection";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const Index = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const id = location.hash.replace("#", "");
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const t = window.setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+
+    return () => window.clearTimeout(t);
+  }, [location.hash]);
+
   return (
     <div className="min-h-screen">
       <Header />
