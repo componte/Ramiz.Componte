@@ -260,13 +260,6 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
                   "¡Claro! Hay disponibilidad. ¿Deseas reservar a nombre de quién y con algún requerimiento (niños/alergias)?",
               },
               {
-                id: "commerce",
-                title: "Comercio",
-                user: "Hola, quisiera conocer el estado de mi pedido #1842 y el tiempo estimado de entrega.",
-                assistant:
-                  "Con gusto. El pedido #1842 está en ruta de entrega. Tiempo estimado: 45–60 min. ¿Deseas recibir actualizaciones por WhatsApp?",
-              },
-              {
                 id: "colloquial",
                 title: "Retail",
                 user: "Mano, ¿de casualidad tienes audífonos inalámbricos negros?",
@@ -1319,6 +1312,27 @@ const TradingCard = () => {
             </div>
             <h3 className="text-4xl font-black text-white mb-1 tracking-tighter normal-case">@Ramiz.Componte</h3>
             <p className="text-xs md:text-sm font-bold text-gray-500 mb-8">Arquitecto de Automatización</p>
+
+            <div className="-mt-4 mb-8 flex items-center gap-3">
+              <motion.a
+                href="https://instagram.com/ramiz.componte"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs font-bold text-white/80 normal-case tracking-normal hover:bg-white/5"
+                whileHover={{ scale: 1.06, rotate: -1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 22 }}
+              >
+                <Instagram className="h-4 w-4" /> Instagram
+              </motion.a>
+              <motion.a
+                href="https://www.tiktok.com/@ramiz.componte"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs font-bold text-white/80 normal-case tracking-normal hover:bg-white/5"
+                whileHover={{ scale: 1.06, rotate: 1 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 22 }}
+              >
+                <TikTokIcon className="h-4 w-4" /> TikTok
+              </motion.a>
+            </div>
             
             <div className="h-px w-full bg-gray-800 mb-8" />
 
@@ -1711,26 +1725,6 @@ const Dashboard = () => {
 
       <footer id="contacto" className="border-t border-slate-800 bg-slate-950 py-12 text-center">
         <div className="mx-auto flex max-w-4xl flex-col items-center justify-center space-y-6 px-4">
-          <div className="flex space-x-6">
-            <motion.a
-              href="https://instagram.com/ramiz.componte"
-              className="text-gray-500 transition-colors hover:text-pink-400"
-              whileHover={{ scale: 1.12, rotate: -2 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 22 }}
-            >
-              <Instagram className="h-6 w-6" />
-            </motion.a>
-            <motion.a
-              href="https://www.tiktok.com/@ramiz.componte"
-              className="text-gray-500 transition-colors hover:text-cyan-400"
-              whileHover={{ scale: 1.12, rotate: 2 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 22 }}
-            >
-              <TikTokIcon className="h-6 w-6" />
-            </motion.a>
-          </div>
           <p className="text-xs text-gray-600">© {new Date().getFullYear()} @Ramiz.Componte. Todos los derechos reservados.</p>
         </div>
       </footer>
