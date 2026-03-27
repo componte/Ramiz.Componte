@@ -39,6 +39,9 @@ import { Textarea } from "@/components/ui/textarea";
 const AGENT_AVATAR_URL =
   "https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png";
 
+ const PROFILE_CARD_PHOTO_URL =
+   "https://res.cloudinary.com/dziczqgzn/image/upload/f_auto,q_auto/v1774633255/IMG_9750_hlstx7.heic";
+
 const CAL_IFRAME_SRC = "https://cal.com/componte-dryjsc/agenda-ramiz";
 
 const staggerContainer = {
@@ -1309,6 +1312,11 @@ const TradingCard = () => {
       >
         <div className="trading-card border-t-4 border-purple-500/80 bg-[#050507] p-8 lg:p-10 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]">
           <div className="relative z-10 flex flex-col uppercase tracking-widest text-left">
+            <div className="relative mb-8 overflow-hidden rounded-2xl border border-white/10 bg-black/40">
+              <img src={PROFILE_CARD_PHOTO_URL} alt="Ramiz" className="h-64 w-full object-cover" loading="lazy" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050507] via-transparent to-transparent" />
+              <div className="pointer-events-none absolute inset-0 shimmer opacity-10" />
+            </div>
             <h3 className="text-4xl font-black text-white mb-1 tracking-tighter normal-case">@Ramiz.Componte</h3>
             <p className="text-xs md:text-sm font-bold text-gray-500 mb-8">Arquitecto de Automatización</p>
             
