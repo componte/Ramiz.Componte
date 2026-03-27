@@ -147,8 +147,8 @@ export function ParticleTextEffect({ words = DEFAULT_WORDS }: ParticleTextEffect
     offscreenCtx.font = `900 ${fontSize}px "Inter", sans-serif`
     offscreenCtx.textAlign = "center"
     offscreenCtx.textBaseline = "middle"
-    // Dibujar la palabra cerca del centro para que se adapte a bandas más pequeñas (Hero)
-    offscreenCtx.fillText(word, canvas.width / 2, canvas.height * 0.55)
+    // Dibujar la palabra un poco más abajo del centro (75% de la altura)
+    offscreenCtx.fillText(word, canvas.width / 2, canvas.height * 0.75)
 
     const imageData = offscreenCtx.getImageData(0, 0, canvas.width, canvas.height)
     const pixels = imageData.data

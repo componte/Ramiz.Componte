@@ -178,15 +178,26 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
       id="inicio"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pt-20 text-center"
     >
-      <div className="pointer-events-none absolute left-1/2 top-[56%] z-0 h-[190px] w-[1100px] max-w-[95vw] -translate-x-1/2 opacity-55 mix-blend-screen sm:h-[220px] md:top-[58%] md:h-[240px]">
-        <div className="relative h-full w-full">
-          <ParticleTextEffect />
-        </div>
-      </div>
+      <ParticleTextEffect />
       <div className="absolute left-[20%] top-[10%] h-[500px] w-[500px] animate-[spin_20s_linear_infinite] rounded-full bg-purple-700/10 blur-[150px]" />
       <div className="absolute right-[20%] bottom-[10%] h-[600px] w-[600px] animate-[spin_25s_linear_infinite_reverse] rounded-full bg-purple-900/10 blur-[150px]" />
 
-      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="relative z-10 max-w-5xl">
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] md:block">
+        <div className="absolute inset-0 bg-gradient-to-l from-[#050507] via-[#050507]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-cyan-500/5 to-transparent" />
+        <div className="absolute inset-0 opacity-90">
+          <img
+            src="https://res.cloudinary.com/dziczqgzn/image/upload/v1774623760/3e376dc3-5430-4f31-b3cc-df8c817101d2_vrzpxg.jpg"
+            alt="Ramiz"
+            loading="eager"
+            decoding="async"
+            className="h-full w-full object-cover object-[55%_25%] opacity-90"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050507] via-transparent to-transparent" />
+      </div>
+
+      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="relative z-10 max-w-5xl md:pr-[38%]">
         <motion.div
           variants={fadeInUp}
           className="mb-8 inline-flex items-center border-b border-purple-500/30 pb-2 text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-purple-400"
