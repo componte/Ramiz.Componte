@@ -665,6 +665,8 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
   type Segment = "Business" | "Agency" | "Student" | "";
   type BusinessVolume = "1-10" | "11-30" | "31-80" | "80+" | "";
   type BusinessBudget = "300-500" | "500-1000" | "+1000" | "";
+  type AgencyBudget = "<500" | "500-1000" | "1000-2500" | "+2500" | "";
+  type AgencyObjective = "onboarding" | "reportes" | "atencion" | "contenido";
 
   const [segment, setSegment] = useState<Segment>("");
   const [step, setStep] = useState(0);
@@ -672,24 +674,26 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
   const [submitted, setSubmitted] = useState<null | "qualified" | "unqualified">(null);
 
   const [business, setBusiness] = useState({
-    pain: "",
     volume: "" as BusinessVolume,
     hasWaba: "" as "si" | "no" | "",
     budget: "" as BusinessBudget,
+    pain: "",
     name: "",
+    phone: "",
     email: "",
   });
 
   const [agency, setAgency] = useState({
+    objectives: [] as AgencyObjective[],
+    hasAutomation: "" as "si" | "no" | "",
+    budget: "" as AgencyBudget,
     scale: "",
-    objective: "" as "onboarding" | "reportes" | "atencion" | "",
-    tools: "" as "si" | "no" | "",
-    investment: "",
     name: "",
+    phone: "",
     email: "",
   });
 
-  const [student, setStudent] = useState({ name: "", email: "" });
+  const [student, setStudent] = useState({ name: "", phone: "", email: "" });
 
   const createConfetti = () => {
     const end = Date.now() + 2 * 1000;
@@ -728,11 +732,12 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
       const wabaPoints = business.hasWaba === "si" ? 1 : 0;
       return budgetPoints[business.budget] + volumePoints[business.volume] + wabaPoints;
     }
-    const objectivePoints: Record<typeof agency.objective, number> = { "": 0, onboarding: 2, reportes: 2, atencion: 3 };
-    const toolsPoints = agency.tools === "si" ? 2 : 1;
+    const objectivePoints: Record<AgencyObjective, number> = { onboarding: 2, reportes: 2, atencion: 3, contenido: 2 };
+    const objectivesPoints = agency.objectives.reduce((acc, o) => acc + (objectivePoints[o] ?? 0), 0);
+    const automationPoints = agency.hasAutomation === "si" ? 2 : 1;
     const scalePoints = agency.scale.trim().length >= 12 ? 2 : 1;
-    const investmentPoints = agency.investment.trim().length > 0 ? 1 : 0;
-    return objectivePoints[agency.objective] + toolsPoints + scalePoints + investmentPoints;
+    const budgetPoints: Record<AgencyBudget, number> = { "": 0, "<500": 0, "500-1000": 1, "1000-2500": 2, "+2500": 3 };
+    return objectivesPoints + automationPoints + scalePoints + budgetPoints[agency.budget];
   };
 
   const isQualified = () => segment === "Business" && (business.budget === "500-1000" || business.budget === "+1000");
@@ -741,9 +746,9 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
     setSegment("");
     setStep(0);
     setSubmitted(null);
-    setBusiness({ pain: "", volume: "", hasWaba: "", budget: "", name: "", email: "" });
-    setAgency({ scale: "", objective: "", tools: "", investment: "", name: "", email: "" });
-    setStudent({ name: "", email: "" });
+    setBusiness({ volume: "", hasWaba: "", budget: "", pain: "", name: "", phone: "", email: "" });
+    setAgency({ objectives: [], hasAutomation: "", budget: "", scale: "", name: "", phone: "", email: "" });
+    setStudent({ name: "", phone: "", email: "" });
   };
 
   const submit = async () => {
@@ -758,10 +763,15 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
 
     const payload =
       segment === "Business"
-        ? { ...payloadBase, ...business, volumePerDay: business.volume, investmentEstimated: business.budget }
+        ? { ...payloadBase, ...business, volumePerDay: business.volume, investmentEstimated: business.budget, phone: business.phone }
         : segment === "Agency"
-          ? { ...payloadBase, ...agency, investmentEstimated: agency.investment }
-          : { ...payloadBase, ...student };
+          ? {
+              ...payloadBase,
+              ...agency,
+              investmentEstimated: agency.budget,
+              phone: agency.phone,
+            }
+          : { ...payloadBase, ...student, phone: student.phone };
 
     const res = await fetch(webhookUrl, {
       method: "POST",
@@ -948,6 +958,16 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                       />
                     </div>
                     <div>
+                      <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Teléfono</label>
+                      <Input
+                        placeholder="Tu número"
+                        required
+                        value={student.phone}
+                        onChange={(e) => setStudent((p) => ({ ...p, phone: e.target.value }))}
+                        className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
                       <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
                       <Input
                         placeholder="tu@email.com"
@@ -963,7 +983,7 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                     <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                       Atrás
                     </Button>
-                    <Button type="submit" disabled={loading || !student.name || !student.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
+                    <Button type="submit" disabled={loading || !student.name || !student.phone || !student.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
                       {loading ? "Enviando..." : "Unirme"}
                     </Button>
                   </div>
@@ -971,25 +991,6 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
               </motion.div>
             ) : segment === "Business" ? (
               step === 1 ? (
-                <motion.div key="b1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Punto de dolor</h3>
-                  <p className="text-gray-400">¿Qué proceso específico te quita más tiempo o te hace perder dinero hoy?</p>
-                  <Textarea
-                    value={business.pain}
-                    onChange={(e) => setBusiness((p) => ({ ...p, pain: e.target.value }))}
-                    placeholder="Ej: responder precios todo el día, agendar citas, seguimiento de pagos..."
-                    className="min-h-[140px] rounded-xl border-white/10 bg-black/25 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
-                  />
-                  <div className="flex justify-between border-t border-gray-800 pt-6">
-                    <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
-                      Atrás
-                    </Button>
-                    <Button type="button" disabled={!business.pain.trim()} onClick={() => { triggerProgress(); setStep(2); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
-                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-                </motion.div>
-              ) : step === 2 ? (
                 <motion.div key="b2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Volumen</h3>
                   <p className="text-gray-400">¿Cuántos mensajes o clientes atiendes manualmente al día?</p>
@@ -1030,18 +1031,18 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                     </div>
                   </div>
                   <div className="flex justify-between border-t border-gray-800 pt-6">
-                    <Button type="button" variant="ghost" onClick={() => setStep(1)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                    <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                       Atrás
                     </Button>
-                    <Button type="button" disabled={!business.volume || !business.hasWaba} onClick={() => { triggerProgress(); setStep(3); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                    <Button type="button" disabled={!business.volume || !business.hasWaba} onClick={() => { triggerProgress(); setStep(2); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
                       Continuar <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </div>
                 </motion.div>
-              ) : step === 3 ? (
+              ) : step === 2 ? (
                 <motion.div key="b3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Inversión estimada</h3>
-                  <p className="text-gray-400">Elige un rango para aterrizar el plan.</p>
+                  <p className="text-gray-400">¿Qué tipo de presupuesto se lleva esto para desarrollo/solución?</p>
                   <div className="grid gap-3 md:grid-cols-3">
                     {[
                       { id: "300-500", label: "$300 – $500" },
@@ -1059,10 +1060,37 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                     ))}
                   </div>
                   <div className="flex justify-between border-t border-gray-800 pt-6">
+                    <Button type="button" variant="ghost" onClick={() => setStep(1)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                      Atrás
+                    </Button>
+                    <Button type="button" disabled={!business.budget} onClick={() => { triggerProgress(); setStep(3); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : step === 3 ? (
+                <motion.div key="b1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Punto de dolor</h3>
+                  <p className="text-gray-400">¿Qué proceso específico te quita más tiempo o te hace perder dinero hoy?</p>
+                  <Textarea
+                    value={business.pain}
+                    onChange={(e) => setBusiness((p) => ({ ...p, pain: e.target.value }))}
+                    placeholder="Ej: responder precios todo el día, agendar citas, seguimiento de pagos..."
+                    className="min-h-[140px] rounded-xl border-white/10 bg-black/25 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                  />
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
                     <Button type="button" variant="ghost" onClick={() => setStep(2)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                       Atrás
                     </Button>
-                    <Button type="button" disabled={!business.budget} onClick={() => { triggerProgress(); setStep(4); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                    <Button
+                      type="button"
+                      disabled={!business.pain.trim()}
+                      onClick={() => {
+                        triggerProgress();
+                        setStep(4);
+                      }}
+                      className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
+                    >
                       Continuar <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </div>
@@ -1078,6 +1106,10 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                         <Input placeholder="Nombre" required value={business.name} onChange={(e) => setBusiness((p) => ({ ...p, name: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
                       </div>
                       <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Teléfono</label>
+                        <Input placeholder="Tu número" required value={business.phone} onChange={(e) => setBusiness((p) => ({ ...p, phone: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                      </div>
+                      <div className="md:col-span-2">
                         <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
                         <Input placeholder="tu@email.com" type="email" required value={business.email} onChange={(e) => setBusiness((p) => ({ ...p, email: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
                       </div>
@@ -1086,7 +1118,7 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                       <Button type="button" variant="ghost" onClick={() => setStep(3)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                         Atrás
                       </Button>
-                      <Button type="submit" disabled={loading || !business.name || !business.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
+                      <Button type="submit" disabled={loading || !business.name || !business.phone || !business.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
                         {loading ? "Enviando..." : "Enviar"}
                       </Button>
                     </div>
@@ -1095,52 +1127,126 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
               )
             ) : (
               step === 1 ? (
-                <motion.div key="a1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
-                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Escala</h3>
-                  <p className="text-gray-400">¿Cuántos clientes manejas y qué servicios ofreces?</p>
-                  <Textarea value={agency.scale} onChange={(e) => setAgency((p) => ({ ...p, scale: e.target.value }))} placeholder="Ej: 8 clientes, ads + landing + contenido..." className="min-h-[140px] rounded-xl border-white/10 bg-black/25 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
-                  <div className="flex justify-between border-t border-gray-800 pt-6">
-                    <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
-                      Atrás
-                    </Button>
-                    <Button type="button" disabled={!agency.scale.trim()} onClick={() => { triggerProgress(); setStep(2); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
-                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-                </motion.div>
-              ) : step === 2 ? (
                 <motion.div key="a2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Objetivo</h3>
-                  <p className="text-gray-400">¿Qué buscas automatizar?</p>
-                  <div className="grid gap-3 md:grid-cols-3">
+                  <p className="text-gray-400">¿Qué buscas automatizar? Puedes elegir más de una.</p>
+                  <div className="grid gap-3 md:grid-cols-2">
                     {[
                       { id: "onboarding", label: "Onboarding" },
                       { id: "reportes", label: "Reportes" },
                       { id: "atencion", label: "Atención" },
+                      { id: "contenido", label: "Creación de contenidos" },
                     ].map((o) => (
-                      <button key={o.id} type="button" onClick={() => setAgency((p) => ({ ...p, objective: o.id as any }))} className={`rounded-2xl border px-6 py-5 text-left transition-all ${agency.objective === o.id ? "border-cyan-500/50 bg-cyan-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}>
+                      <button
+                        key={o.id}
+                        type="button"
+                        onClick={() => {
+                          setAgency((p) => {
+                            const exists = p.objectives.includes(o.id as AgencyObjective);
+                            const objectives = exists
+                              ? p.objectives.filter((x) => x !== (o.id as AgencyObjective))
+                              : [...p.objectives, o.id as AgencyObjective];
+                            return { ...p, objectives };
+                          });
+                        }}
+                        className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                          agency.objectives.includes(o.id as AgencyObjective)
+                            ? "border-cyan-500/50 bg-cyan-500/10"
+                            : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                        }`}
+                      >
                         <p className="text-sm font-bold text-white">{o.label}</p>
                       </button>
                     ))}
                   </div>
                   <div className="mt-2">
-                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Ya trabajas con n8n, Make o similares?</label>
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Ya tienes algún proceso automatizado?</label>
                     <div className="grid gap-3 md:grid-cols-2">
                       {[
                         { id: "si", label: "Sí" },
                         { id: "no", label: "No" },
                       ].map((o) => (
-                        <button key={o.id} type="button" onClick={() => setAgency((p) => ({ ...p, tools: o.id as any }))} className={`rounded-2xl border px-6 py-5 text-left transition-all ${agency.tools === o.id ? "border-purple-500/50 bg-purple-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}>
+                        <button
+                          key={o.id}
+                          type="button"
+                          onClick={() => setAgency((p) => ({ ...p, hasAutomation: o.id as any }))}
+                          className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                            agency.hasAutomation === o.id
+                              ? "border-purple-500/50 bg-purple-500/10"
+                              : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                          }`}
+                        >
                           <p className="text-sm font-bold text-white">{o.label}</p>
                         </button>
                       ))}
                     </div>
                   </div>
+
+                  <div className="mt-2">
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Presupuesto para el proyecto</label>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {[
+                        { id: "<500", label: "< $500" },
+                        { id: "500-1000", label: "$500 – $1000" },
+                        { id: "1000-2500", label: "$1000 – $2500" },
+                        { id: "+2500", label: "+ $2500" },
+                      ].map((o) => (
+                        <button
+                          key={o.id}
+                          type="button"
+                          onClick={() => setAgency((p) => ({ ...p, budget: o.id as AgencyBudget }))}
+                          className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                            agency.budget === o.id
+                              ? "border-cyan-500/50 bg-cyan-500/10"
+                              : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                          }`}
+                        >
+                          <p className="text-sm font-bold text-white">{o.label}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
+                    <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                      Atrás
+                    </Button>
+                    <Button
+                      type="button"
+                      disabled={agency.objectives.length === 0 || !agency.hasAutomation || !agency.budget}
+                      onClick={() => {
+                        triggerProgress();
+                        setStep(2);
+                      }}
+                      className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
+                    >
+                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : step === 2 ? (
+                <motion.div key="a1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Escala</h3>
+                  <p className="text-gray-400">¿Cuántos clientes manejas y qué servicios ofreces?</p>
+                  <Textarea
+                    value={agency.scale}
+                    onChange={(e) => setAgency((p) => ({ ...p, scale: e.target.value }))}
+                    placeholder="Ej: 8 clientes, ads + landing + contenido..."
+                    className="min-h-[140px] rounded-xl border-white/10 bg-black/25 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                  />
                   <div className="flex justify-between border-t border-gray-800 pt-6">
                     <Button type="button" variant="ghost" onClick={() => setStep(1)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                       Atrás
                     </Button>
-                    <Button type="button" disabled={!agency.objective || !agency.tools} onClick={() => { triggerProgress(); setStep(3); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                    <Button
+                      type="button"
+                      disabled={!agency.scale.trim()}
+                      onClick={() => {
+                        triggerProgress();
+                        setStep(3);
+                      }}
+                      className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
+                    >
                       Continuar <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </div>
@@ -1148,8 +1254,7 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
               ) : (
                 <motion.div key="a3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                   <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Contacto</h3>
-                  <p className="text-gray-400">Inversión estimada por proyecto (rango abierto).</p>
-                  <Input value={agency.investment} onChange={(e) => setAgency((p) => ({ ...p, investment: e.target.value }))} placeholder="Ej: 800 – 1500, 2k+, depende del alcance..." className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                  <p className="text-gray-400">Con esto ya puedo responderte con claridad.</p>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
@@ -1157,6 +1262,10 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                         <Input placeholder="Nombre" required value={agency.name} onChange={(e) => setAgency((p) => ({ ...p, name: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
                       </div>
                       <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Teléfono</label>
+                        <Input placeholder="Tu número" required value={agency.phone} onChange={(e) => setAgency((p) => ({ ...p, phone: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                      </div>
+                      <div className="md:col-span-2">
                         <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
                         <Input placeholder="tu@email.com" type="email" required value={agency.email} onChange={(e) => setAgency((p) => ({ ...p, email: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
                       </div>
@@ -1165,7 +1274,7 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                       <Button type="button" variant="ghost" onClick={() => setStep(2)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                         Atrás
                       </Button>
-                      <Button type="submit" disabled={loading || !agency.name || !agency.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
+                      <Button type="submit" disabled={loading || !agency.name || !agency.phone || !agency.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
                         {loading ? "Enviando..." : "Enviar"}
                       </Button>
                     </div>
