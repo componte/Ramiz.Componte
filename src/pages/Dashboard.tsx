@@ -146,7 +146,7 @@ const AnimatedCounter = ({
 };
 
 const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
-  const phrases = ["85% Procesos Automatizados", "156 Horas ahorradas/año", "+3 Horas libres/semana"];
+  const phrases = ["90% Procesos Automatizados", "156 Horas ahorradas/año", "+3 Horas libres/semana"];
   const [currentPhrase, setCurrentPhrase] = useState(0);
   const [typingText, setTypingText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -202,9 +202,9 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="text-purple-500 inline-block"
           >
-            Sistemas que operan
+            Sistemas de Libertad
           </motion.span>
-          <br className="hidden md:block" /> tu negocio por ti.
+          <br className="hidden md:block" /> que Operan tu Negocio por Ti.
         </motion.h1>
 
         <motion.p variants={fadeInUp} className="mb-10 mx-auto max-w-2xl text-xl font-light leading-relaxed text-gray-400 md:text-2xl drop-shadow-xl">
@@ -236,7 +236,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
             }}
             className="h-14 rounded-none border-gray-700 bg-transparent px-10 text-lg font-medium text-gray-300 transition-all hover:border-purple-500 hover:bg-white/5 hover:text-white"
           >
-            Ver Cómo Funciona
+            Ver Casos Reales
           </Button>
         </motion.div>
 
@@ -625,20 +625,26 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
 );
 
 const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => {
-  const [step, setStep] = useState(0);
+  const webhookUrl =
+    "https://n8n-n8n.3rtzuv.easypanel.host/webhook-test/01ce5e83-7f9f-4b2b-af6d-2d386fea7adf";
+
+  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [formType, setFormType] = useState<"client" | "student">("client");
+  const [submitted, setSubmitted] = useState<null | "qualified" | "unqualified">(null);
+  const [waitlistSubmitting, setWaitlistSubmitting] = useState(false);
+  const [waitlistSent, setWaitlistSent] = useState(false);
+
   const [formData, setFormData] = useState({
-    service: "",
-    volume: "",
-    budget: "",
-    problem: "",
-    tools: "",
+    persona: "" as "dueno" | "agencia" | "estudiante" | "",
+    volume: "" as "<500" | "500-1500" | "+1500" | "",
+    budget: "" as "<350" | "+350" | "+700" | "+1500" | "",
     name: "",
-    contact: "",
-    studentReason: "",
-    studentPay: "",
+    email: "",
+  });
+
+  const [waitlistData, setWaitlistData] = useState({
+    useCase: "" as "negocio" | "trabajo" | "curiosidad" | "",
+    pricing: "" as "comunidad-mensual" | "curso-unico" | "mentoria" | "",
   });
 
   const createConfetti = () => {
@@ -670,21 +676,63 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
     })();
   };
 
+  const isQualified = (data: typeof formData) => {
+    if (data.persona === "estudiante") return false;
+    if (data.budget === "<350") return false;
+    if (data.volume === "<500") return false;
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
+    setWaitlistSent(false);
+    try {
+      const res = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo: "diagnostico-calificador",
+          ...formData,
+          qualified: isQualified(formData),
+          page: window.location.href,
+          createdAt: new Date().toISOString(),
+        }),
+      });
+      if (!res.ok) throw new Error("Webhook request failed");
+
+      const qualified = isQualified(formData) ? "qualified" : "unqualified";
+      setSubmitted(qualified);
       createConfetti();
-    }, 1500);
+    } catch {
+      setSubmitted(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const chooseService = (service: string) => {
-    triggerProgress();
-    setFormType("client");
-    setFormData((prev) => ({ ...prev, service }));
-    setStep(1);
+  const submitWaitlist = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setWaitlistSubmitting(true);
+    try {
+      const res = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo: "waitlist",
+          ...formData,
+          ...waitlistData,
+          page: window.location.href,
+          createdAt: new Date().toISOString(),
+        }),
+      });
+      if (!res.ok) throw new Error("Webhook request failed");
+      setWaitlistSent(true);
+    } catch {
+      setWaitlistSent(false);
+    } finally {
+      setWaitlistSubmitting(false);
+    }
   };
 
   return (
@@ -695,56 +743,145 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
         whileInView="show"
         viewport={{ once: true }}
         variants={fadeInUp}
-        className="border-t-2 border-purple-500/40 bg-[#050507] p-8 shadow-2xl md:p-12 transition-all relative overflow-hidden"
+        className="border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl md:p-12 transition-all relative overflow-hidden"
       >
         <div className="mb-14 border-b border-gray-800 pb-8 text-center">
           <h2 className="mb-2 text-4xl font-black md:text-5xl">
-            {formType === "student" && step > 0 ? "Únete a la academia" : "Iniciemos tu transformación"}
+            Iniciemos tu Diagnóstico
           </h2>
           <p className="text-gray-400">
-            {formType === "student" && step > 0
-              ? "Cuéntame por qué quieres aprender y asegura tu cupo."
-              : "Completa este breve formulario para un diagnóstico preciso."}
+            Completa este breve formulario para clasificar tu caso y darte el siguiente paso.
           </p>
         </div>
 
-        {step > 0 && (
-          <div className="mb-10 flex items-center justify-center space-x-2">
-            {[1, 2, 3].map((num) => (
-              <div key={num} className="flex items-center">
-                <div
-                  className={`flex h-10 w-10 items-center justify-center border text-xs ${
-                    step >= num
-                      ? "border-purple-500 bg-purple-500/10 text-purple-400 font-bold"
-                      : "border-gray-800 bg-[#050507] text-gray-600"
-                  } transition-colors`}
-                >
-                  {step > num ? <CheckCircle2 className="h-5 w-5" /> : num}
-                </div>
-                {num < 3 && (
-                  <div
-                    className={`mx-2 h-px w-8 ${step > num ? "bg-purple-500" : "bg-gray-800"}`}
-                  />
-                )}
+        <div className="mb-10 flex items-center justify-center space-x-2">
+          {[0, 1, 2, 3].map((num) => (
+            <div key={num} className="flex items-center">
+              <div
+                className={`flex h-10 w-10 items-center justify-center border text-xs ${
+                  step >= num
+                    ? "border-purple-500 bg-purple-500/10 text-purple-400 font-bold"
+                    : "border-white/10 bg-black/20 text-gray-600"
+                } transition-colors`}
+              >
+                {step > num ? <CheckCircle2 className="h-5 w-5" /> : num + 1}
               </div>
-            ))}
-          </div>
-        )}
+              {num < 3 && <div className={`mx-2 h-px w-8 ${step > num ? "bg-purple-500" : "bg-white/10"}`} />}
+            </div>
+          ))}
+        </div>
 
         <div className="min-h-[320px]">
           <AnimatePresence mode="wait">
-            {success ? (
+            {submitted ? (
               <motion.div
                 key="success"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center justify-center py-16 text-center"
               >
-                <div className="mb-6 flex h-24 w-24 items-center justify-center border border-green-500/30 bg-green-500/10 text-green-400">
-                  <CheckCircle2 className="h-10 w-10" />
-                </div>
-                <h3 className="mb-2 text-3xl font-black">¡Solicitud recibida!</h3>
-                <p className="text-gray-400">Me pondré en contacto contigo pronto para coordinar tu diagnóstico.</p>
+                {submitted === "qualified" ? (
+                  <>
+                    <div className="mb-6 flex h-24 w-24 items-center justify-center border border-cyan-500/30 bg-cyan-500/10 text-cyan-300">
+                      <CheckCircle2 className="h-10 w-10" />
+                    </div>
+                    <h3 className="mb-2 text-3xl font-black">Felicidades.</h3>
+                    <p className="max-w-xl text-gray-400">
+                      Tu negocio está listo para escalar. Selecciona una hora para tu Sesión Estratégica Gratuita de 15 min.
+                    </p>
+                    <div className="mt-8 w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30">
+                      <iframe
+                        title="Agenda Ramiz"
+                        src="https://cal.com/componte-dryjsc/agenda-ramiz"
+                        className="h-[720px] w-full"
+                        loading="lazy"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-6 flex h-24 w-24 items-center justify-center border border-purple-500/30 bg-purple-500/10 text-purple-300">
+                      <GraduationCap className="h-10 w-10" />
+                    </div>
+                    <h3 className="mb-2 text-3xl font-black">Gracias.</h3>
+                    <p className="max-w-xl text-gray-400">
+                      Para tu nivel actual, te sugiero unirte a la lista de espera para mi curso/comunidad.
+                      Te aviso primero cuando abramos acceso exclusivo.
+                    </p>
+
+                    <form onSubmit={submitWaitlist} className="mt-10 w-full max-w-xl space-y-5 text-left">
+                      <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
+                          ¿Para qué quieres aprender esto?
+                        </label>
+                        <div className="grid gap-3 md:grid-cols-3">
+                          {[
+                            { id: "negocio", label: "Aplicarlo en mi negocio" },
+                            { id: "trabajo", label: "Trabajar de esto" },
+                            { id: "curiosidad", label: "Curiosidad / explorar" },
+                          ].map((o) => (
+                            <button
+                              key={o.id}
+                              type="button"
+                              onClick={() => setWaitlistData((p) => ({ ...p, useCase: o.id as any }))}
+                              className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-colors ${
+                                waitlistData.useCase === o.id
+                                  ? "border-purple-500/50 bg-purple-500/10 text-white"
+                                  : "border-white/10 bg-black/20 text-white/80 hover:bg-white/5"
+                              }`}
+                            >
+                              {o.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
+                          ¿Qué tipo de inversión te cuadra más?
+                        </label>
+                        <div className="grid gap-3 md:grid-cols-3">
+                          {[
+                            { id: "comunidad-mensual", label: "Comunidad mensual ($40–$80)" },
+                            { id: "curso-unico", label: "Curso único ($300–$600)" },
+                            { id: "mentoria", label: "Mentoría / acompañamiento" },
+                          ].map((o) => (
+                            <button
+                              key={o.id}
+                              type="button"
+                              onClick={() => setWaitlistData((p) => ({ ...p, pricing: o.id as any }))}
+                              className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-colors ${
+                                waitlistData.pricing === o.id
+                                  ? "border-cyan-500/50 bg-cyan-500/10 text-white"
+                                  : "border-white/10 bg-black/20 text-white/80 hover:bg-white/5"
+                              }`}
+                            >
+                              {o.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-5">
+                        <p className="text-xs text-gray-500">
+                          {waitlistSent ? "Listo: te agregué a la lista de espera." : "Te escribiré cuando abramos."}
+                        </p>
+                        <Button
+                          type="submit"
+                          disabled={
+                            waitlistSubmitting ||
+                            waitlistSent ||
+                            !waitlistData.useCase ||
+                            !waitlistData.pricing
+                          }
+                          className="rounded-xl bg-purple-600 px-5 hover:bg-purple-500"
+                        >
+                          {waitlistSubmitting ? "Enviando..." : waitlistSent ? "Enviado" : "Unirme"}
+                        </Button>
+                      </div>
+                    </form>
+                  </>
+                )}
               </motion.div>
             ) : step === 0 ? (
               <motion.div
@@ -755,63 +892,52 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                 className="space-y-8"
               >
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold tracking-tight text-white">¿Qué quieres construir primero?</h3>
+                  <h3 className="text-2xl font-bold tracking-tight text-white">¿Quién eres?</h3>
                   <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500">
                     Elige una opción
                   </p>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <button
-                    type="button"
-                    onClick={() => chooseService("agente")}
-                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:border-purple-500/40 hover:bg-white/[0.02]"
-                  >
-                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-purple-500/20 bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20">
-                      <Bot className="h-6 w-6" />
-                    </div>
-                    <p className="text-lg font-bold text-white">Agente de Ventas 24/7</p>
-                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">Automatiza atención, precios, pedidos y cobros.</p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => chooseService("web")}
-                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:bg-white/[0.02]"
-                  >
-                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-gray-700 bg-white/5 text-gray-300 group-hover:bg-white/10">
-                      <Code className="h-6 w-6" />
-                    </div>
-                    <p className="text-lg font-bold text-white">Sitio Web con Lógica</p>
-                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">No es diseño: es software funcionando.</p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => chooseService("arquitectura")}
-                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:bg-white/[0.02]"
-                  >
-                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-gray-700 bg-white/5 text-gray-300 group-hover:bg-white/10">
-                      <Cpu className="h-6 w-6" />
-                    </div>
-                    <p className="text-lg font-bold text-white">Arquitectura Integral</p>
-                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">Todo conectado: agente + web + data + automatización.</p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => chooseService("no-se")}
-                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:border-gray-600"
-                  >
-                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-gray-800 bg-black text-gray-500 group-hover:text-white">
-                      <ArrowRight className="h-6 w-6" />
-                    </div>
-                    <p className="text-lg font-bold text-white">No estoy seguro</p>
-                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">Quiero un diagnóstico y que me digas el camino.</p>
-                  </button>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {[
+                    { id: "dueno", label: "Dueño de Negocio", icon: ShoppingCart },
+                    { id: "agencia", label: "Freelancer / Agencia", icon: Globe },
+                    { id: "estudiante", label: "Estudiante / Curioso", icon: GraduationCap },
+                  ].map((p) => {
+                    const Icon = p.icon;
+                    const active = formData.persona === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, persona: p.id as any }));
+                          triggerProgress();
+                          setStep(1);
+                        }}
+                        className={`group rounded-2xl border p-6 text-left transition-all ${
+                          active
+                            ? "border-purple-500/50 bg-purple-500/10"
+                            : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                        }`}
+                      >
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/80">
+                          <Icon className="h-6 w-6" />
+                        </div>
+                        <p className="text-base font-bold text-white">{p.label}</p>
+                        <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">
+                          {p.id === "dueno"
+                            ? "Quiero automatizar y escalar operaciones."
+                            : p.id === "agencia"
+                              ? "Quiero implementar sistemas para clientes."
+                              : "Quiero aprender y construirlo por mi cuenta."}
+                        </p>
+                      </button>
+                    );
+                  })}
                 </div>
               </motion.div>
-            ) : formType === "client" && step === 1 ? (
+            ) : step === 1 ? (
               <motion.div
                 key="step1"
                 initial={{ opacity: 0, x: 20 }}
@@ -819,72 +945,48 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Cuéntame sobre tu negocio</h3>
-                <div>
-                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Qué tipo de solución te interesa?</label>
-                  <select
-                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                    value={formData.service}
-                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                  >
-                    <option value="">Selecciona una opción</option>
-                    <option value="agente">Agente de Ventas 24/7</option>
-                    <option value="web">Sitio Web con Lógica</option>
-                    <option value="arquitectura">Arquitectura Integral</option>
-                    <option value="no-se">No estoy seguro, quiero un diagnóstico</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Volumen de mensajes o clientes por día</label>
-                  <select
-                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                    value={formData.volume}
-                    onChange={(e) => setFormData({ ...formData, volume: e.target.value })}
-                  >
-                    <option value="">Selecciona una opción</option>
-                    <option value="1-20">1 – 20 por día</option>
-                    <option value="20-50">20 – 50 por día</option>
-                    <option value="50-100">50 – 100 por día</option>
-                    <option value="+100">Más de 100 por día</option>
-                  </select>
-                </div>
-                <div className="pb-6">
-                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Presupuesto disponible</label>
-                  <select
-                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                    value={formData.budget}
-                    onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                  >
-                    <option value="">Selecciona una opción</option>
-                    <option value="$400+">$400 / mes</option>
-                    <option value="$800+">$800 / mes</option>
-                    <option value="$1600+">$1,600+ / mes</option>
-                  </select>
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-white/10 pb-4">
+                  Volumen mensual de mensajes/consultas
+                </h3>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {[
+                    { id: "<500", label: "< 500" },
+                    { id: "500-1500", label: "500 – 1500" },
+                    { id: "+1500", label: "+ 1500" },
+                  ].map((o) => (
+                    <button
+                      key={o.id}
+                      type="button"
+                      onClick={() => {
+                        setFormData((prev) => ({ ...prev, volume: o.id as any }));
+                        triggerProgress();
+                        setStep(2);
+                      }}
+                      className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                        formData.volume === o.id
+                          ? "border-cyan-500/50 bg-cyan-500/10"
+                          : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                      }`}
+                    >
+                      <p className="text-sm font-bold text-white">{o.label}</p>
+                      <p className="mt-1 text-xs text-gray-400">Consultas / mes</p>
+                    </button>
+                  ))}
                 </div>
                 <div className="flex justify-between border-t border-gray-800 pt-6">
                   <Button
                     variant="ghost"
                     onClick={() => {
-                      setFormData((prev) => ({ ...prev, service: "" }));
+                      setFormData((prev) => ({ ...prev, persona: "", volume: "" }));
                       setStep(0);
                     }}
                     className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
                   >
                     Atrás
                   </Button>
-                  <Button
-                    disabled={!formData.service || !formData.volume || !formData.budget}
-                    onClick={() => {
-                      triggerProgress();
-                      setStep(2);
-                    }}
-                    className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
-                  >
-                    Continuar <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
                 </div>
               </motion.div>
-            ) : formType === "client" && step === 2 ? (
+            ) : step === 2 ? (
               <motion.div
                 key="step2"
                 initial={{ opacity: 0, x: 20 }}
@@ -892,110 +994,23 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-6"
               >
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Tu situación actual</h3>
-                <div>
-                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Cuál es el proceso que más tiempo te consume hoy?</label>
-                  <Textarea
-                    placeholder="Ej: Respondo los mismos mensajes 30 veces al día, proceso pedidos a mano..."
-                    value={formData.problem}
-                    onChange={(e) => setFormData({ ...formData, problem: e.target.value })}
-                    className="min-h-[140px] rounded-none border-gray-800 bg-[#050507] text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
-                  />
-                </div>
-                <div className="pb-6">
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-white/10 pb-4">
+                  Inversión estimada para el proyecto
+                </h3>
+                <div className="pb-2">
                   <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
-                    ¿Qué herramientas usas actualmente? <span className="text-gray-700">(opcional)</span>
+                    Selecciona una opción
                   </label>
-                  <Input
-                    placeholder="Ej: WhatsApp, Excel, nada..."
-                    value={formData.tools}
-                    onChange={(e) => setFormData({ ...formData, tools: e.target.value })}
-                    className="rounded-none border-gray-800 bg-[#050507] py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
-                  />
-                </div>
-                <div className="flex justify-between border-t border-gray-800 pt-6">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setStep(1)}
-                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
-                  >
-                    Atrás
-                  </Button>
-                  <Button
-                    disabled={!formData.problem}
-                    onClick={() => {
-                      triggerProgress();
-                      setStep(3);
-                    }}
-                    className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
-                  >
-                    Solo falta 1 paso <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              </motion.div>
-            ) : formType === "student" && step === 1 ? (
-              <motion.div
-                key="student-step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Tus motivaciones</h3>
-                <div>
-                  <label className="mb-4 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Por qué quieres aprender a construir esto?</label>
-                  <div className="flex flex-col gap-3">
-                    {[
-                      "Crear / Escalar Servicio de Automatización",
-                      "Dominar IA + Web para mi carrera",
-                      "Implementar Sistemas en Mi Negocio",
-                      "Tengo una idea SaaS",
-                    ].map((reason) => (
-                      <button
-                        key={reason}
-                        type="button"
-                        onClick={() => {
-                          setFormData({ ...formData, studentReason: reason });
-                          triggerProgress();
-                          setStep(2);
-                        }}
-                        className="w-full border border-gray-800 bg-[#050507] p-5 text-left text-sm font-bold text-white transition-all hover:bg-purple-500/10 hover:border-purple-500/50"
-                      >
-                        {reason}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="flex justify-between border-t border-gray-800 pt-6">
-                  <Button
-                    variant="ghost"
-                    onClick={() => { setStep(0); setFormType("client"); }}
-                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
-                  >
-                    Volver y cancelar
-                  </Button>
-                </div>
-              </motion.div>
-            ) : formType === "student" && step === 2 ? (
-              <motion.div
-                key="student-step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Tu inversión</h3>
-                <div className="pb-6">
-                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Cuánto estarías dispuesto a invertir en tu formación?</label>
                   <select
-                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                    value={formData.studentPay}
-                    onChange={(e) => setFormData({ ...formData, studentPay: e.target.value })}
+                    className="w-full rounded-xl border border-white/10 bg-black/25 px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                    value={formData.budget}
+                    onChange={(e) => setFormData((p) => ({ ...p, budget: e.target.value as any }))}
                   >
-                    <option value="">Selecciona una opción</option>
-                    <option value="$50-$100">Entre $50 y $100</option>
-                    <option value="$100-$300">Entre $100 y $300</option>
-                    <option value="$300+">Más de $300 (Avanzado/Mentoría privada)</option>
+                    <option value="">Selecciona…</option>
+                    <option value="<350">Menos de $350</option>
+                    <option value="+350">+$350</option>
+                    <option value="+700">+$700</option>
+                    <option value="+1500">+$1500</option>
                   </select>
                 </div>
                 <div className="flex justify-between border-t border-gray-800 pt-6">
@@ -1007,11 +1022,14 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                     Atrás
                   </Button>
                   <Button
-                    disabled={!formData.studentPay}
-                    onClick={() => { triggerProgress(); setStep(3); }}
+                    disabled={!formData.budget}
+                    onClick={() => {
+                      triggerProgress();
+                      setStep(3);
+                    }}
                     className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
                   >
-                    Solo falta 1 paso <ArrowRight className="ml-2 h-4 w-4" />
+                    Continuar <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </motion.div>
@@ -1031,18 +1049,19 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                       placeholder="Identidad"
                       required
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="rounded-none border-gray-800 bg-[#050507] py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                      onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
+                      className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
                     />
                   </div>
                   <div className="pb-6">
-                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Forma de contacto preferida</label>
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
                     <Input
-                      placeholder="WhatsApp o Email"
+                      placeholder="tu@email.com"
+                      type="email"
                       required
-                      value={formData.contact}
-                      onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                      className="rounded-none border-gray-800 bg-[#050507] py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                      value={formData.email}
+                      onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
+                      className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
                     />
                   </div>
                   <div className="flex justify-between border-t border-gray-800 pt-6">
@@ -1056,14 +1075,14 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                     </Button>
                     <Button
                       type="submit"
-                      disabled={loading || !formData.name || !formData.contact}
+                      disabled={loading || !formData.name || !formData.email}
                       className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200"
                     >
                       {loading ? (
                         "Enviando..."
                       ) : (
                         <>
-                          <span>Finalizar y Enviar</span> <Send className="ml-2 h-4 w-4" />
+                          <span>Enviar</span> <Send className="ml-2 h-4 w-4" />
                         </>
                       )}
                     </Button>
@@ -1073,38 +1092,6 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-6 flex flex-col md:flex-row items-start md:items-center justify-between border-t border-gray-800 bg-transparent py-5"
-      >
-        <div className="flex items-center gap-4 mb-4 md:mb-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#050507] text-gray-400 border border-gray-800">
-            <GraduationCap className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-gray-200">¿Quieres aprender a construir esto tú mismo?</p>
-            <p className="mt-1 text-xs text-gray-500">
-              Estoy preparando material para enseñar cómo se construyen estos sistemas.
-            </p>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            setFormType("student");
-            setStep(1);
-            document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="cursor-pointer border border-purple-500/30 text-purple-400 px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-purple-500 hover:text-white transition-all w-full md:w-auto text-center"
-        >
-          Lista de espera
-        </button>
       </motion.div>
     </section>
   );
@@ -1182,149 +1169,37 @@ type ChatMessage = {
 };
 
 const ChatWidget = () => {
-  const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "m1",
-      role: "assistant",
-      text: "Hola, soy el asistente de Ramiz. Cuéntame qué quieres construir y te guío.",
-    },
-  ]);
-  const endRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [open, messages.length]);
-
-  const sendMessage = (text: string) => {
-    const cleaned = text.trim();
-    if (!cleaned) return;
-
-    setMessages((prev) => [
-      ...prev,
-      { id: `u-${Date.now()}`, role: "user", text: cleaned },
-      {
-        id: `a-${Date.now()}-r`,
-        role: "assistant",
-        text: "Recibido. En breve conectaremos este chat al sistema para responder automáticamente. Por ahora, déjame tu objetivo y lo estructuramos.",
-      },
-    ]);
-    setInput("");
-  };
-
   return (
     <div className="fixed bottom-5 right-5 z-[55]">
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key="chat-panel"
-            initial={{ opacity: 0, y: 12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 380, damping: 28 }}
-            className="mb-3 w-[340px] overflow-hidden rounded-2xl border border-white/10 bg-black/55 shadow-[0_20px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl"
-          >
-            <div className="flex items-center justify-between border-b border-white/10 bg-black/40 px-4 py-3">
-              <div className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/10">
-                  <img
-                    src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
-                    alt="Agente"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="leading-tight">
-                  <p className="text-sm font-semibold text-white">Asistente</p>
-                  <p className="text-[11px] text-gray-400">Chat en beta (conexión a webhook luego)</p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
-                aria-label="Cerrar chat"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="max-h-[320px] space-y-3 overflow-y-auto px-4 py-4">
-              {messages.map((m) => (
-                <div key={m.id} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
-                  <div
-                    className={
-                      m.role === "user"
-                        ? "max-w-[85%] rounded-2xl rounded-br-md bg-gradient-to-r from-purple-600/80 to-cyan-600/70 px-3 py-2 text-[13px] text-white"
-                        : "max-w-[85%] rounded-2xl rounded-bl-md border border-white/10 bg-black/45 px-3 py-2 text-[13px] text-gray-200"
-                    }
-                  >
-                    {m.text}
-                  </div>
-                </div>
-              ))}
-              <div ref={endRef} />
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                sendMessage(input);
-              }}
-              className="flex items-center gap-2 border-t border-white/10 bg-black/35 px-3 py-3"
-            >
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Escribe tu mensaje..."
-                className="h-10 flex-1 rounded-xl border border-white/10 bg-black/40 px-3 text-[13px] text-white placeholder:text-gray-500 outline-none focus:border-cyan-400/50"
-              />
-              <button
-                type="submit"
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/80 transition-colors hover:bg-white/10"
-                aria-label="Enviar"
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <div className="group relative">
         <div className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2">
           <div className="hidden rounded-2xl border border-white/10 bg-black/65 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.6)] opacity-0 translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 md:block">
-            ¿Te ayudo a elegir?
+            Solicitar diagnóstico
           </div>
           <div className="md:hidden rounded-2xl border border-white/10 bg-black/55 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl">
-            Habla con el agente
+            Diagnóstico
           </div>
         </div>
 
         <motion.button
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" })}
           whileHover={{ scale: 1.06 }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 420, damping: 24 }}
           className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-purple-600/90 to-cyan-600/80 text-white shadow-[0_22px_60px_rgba(0,0,0,0.65)]"
-          aria-label={open ? "Cerrar chat" : "Abrir chat"}
+          aria-label="Abrir diagnóstico"
         >
           <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500/60 via-cyan-500/50 to-purple-500/60 opacity-90 blur" />
           <div className="pointer-events-none absolute -inset-3 rounded-[22px] bg-purple-500/20 blur-xl opacity-60 animate-pulse" />
           <div className="pointer-events-none absolute -inset-2 rounded-[22px] border border-purple-400/30" />
 
           <div className="relative flex h-full w-full overflow-hidden rounded-2xl items-center justify-center">
-            {open ? (
-              <X className="h-8 w-8" />
-            ) : (
-              <img
-                src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
-                alt="Agente Avatar"
-                className="h-full w-full object-cover"
-              />
-            )}
+            <img
+              src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
+              alt="Agente Avatar"
+              className="h-full w-full object-cover"
+            />
 
             <span className="absolute bottom-2 right-2 flex h-3 w-3">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-35" />
@@ -1354,7 +1229,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#050507] text-white selection:bg-purple-500/30 selection:text-purple-200">
+    <div className="min-h-screen overflow-x-hidden bg-[#0F172A] text-white selection:bg-purple-500/30 selection:text-purple-200">
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -1375,10 +1250,26 @@ const Dashboard = () => {
           opacity: 0.04;
           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
+        .data-grid {
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 0;
+          background:
+            radial-gradient(900px circle at 20% 10%, rgba(139, 92, 246, 0.12), transparent 55%),
+            radial-gradient(900px circle at 80% 30%, rgba(6, 182, 212, 0.10), transparent 60%),
+            radial-gradient(1100px circle at 50% 90%, rgba(139, 92, 246, 0.08), transparent 60%),
+            linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+          background-size: auto, auto, auto, 56px 56px, 56px 56px;
+          mix-blend-mode: screen;
+          opacity: 0.35;
+        }
       `,
         }}
       />
       <div className="noise" />
+      <div className="data-grid" />
 
       <AnimatePresence mode="wait">
         <motion.div
