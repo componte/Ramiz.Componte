@@ -191,7 +191,16 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
           variants={fadeInUp}
           className="mb-8 text-6xl font-black tracking-tighter text-white md:text-8xl lg:text-[110px] leading-[0.9]"
         >
-          <span className="text-purple-500">Sistemas que operan</span>
+          <motion.span 
+            animate={{ 
+              color: ["#a855f7", "#d8b4fe", "#a855f7"],
+              textShadow: ["0px 0px 0px rgba(168,85,247,0)", "0px 0px 40px rgba(168,85,247,0.5)", "0px 0px 0px rgba(168,85,247,0)"]
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="text-purple-500 inline-block"
+          >
+            Sistemas que operan
+          </motion.span>
           <br className="hidden md:block" /> tu negocio por ti.
         </motion.h1>
 
@@ -331,26 +340,26 @@ const SuccessCases = ({ triggerProgress }: { triggerProgress: () => void }) => {
 
                 <div className="grid gap-6 lg:grid-cols-2">
                   <div>
-                    <p className="mb-3 border-b border-red-900/30 pb-2 text-[11px] font-bold uppercase tracking-wider text-red-500">
+                    <p className="mb-4 border-b border-red-900/30 pb-3 text-xs md:text-sm font-bold uppercase tracking-wider text-red-500">
                       Antes del agente
                     </p>
-                    <ul className="space-y-3">
+                    <ul className="space-y-4">
                       {beforePoints.map((p, i) => (
-                        <li key={i} className="flex items-start gap-3 text-xs leading-relaxed text-gray-400">
-                          <span className="mt-1.5 h-1 w-1 shrink-0 bg-red-500/50" />
+                        <li key={i} className="flex items-start gap-3 text-sm leading-relaxed text-gray-400">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-red-500/50" />
                           {p}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <p className="mb-3 border-b border-purple-900/40 pb-2 text-[11px] font-bold uppercase tracking-wider text-purple-400">
+                    <p className="mb-4 border-b border-purple-900/40 pb-3 text-xs md:text-sm font-bold uppercase tracking-wider text-purple-400">
                       Con el agente activo
                     </p>
-                    <ul className="space-y-3">
+                    <ul className="space-y-4">
                       {afterPoints.map((p, i) => (
-                        <li key={i} className="flex items-start gap-3 text-xs leading-relaxed text-gray-300">
-                          <span className="mt-1.5 h-1 w-1 shrink-0 bg-purple-500" />
+                        <li key={i} className="flex items-start gap-3 text-sm leading-relaxed text-gray-300">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 bg-purple-500" />
                           {p}
                         </li>
                       ))}
