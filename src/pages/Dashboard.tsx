@@ -16,14 +16,15 @@ import {
   ArrowRight,
   CheckCircle2,
   Send,
-  Sparkles,
   ChevronRight,
   Instagram,
-  Linkedin,
+  User,
+  X,
   XCircle,
   Check,
   GraduationCap,
   Globe,
+  BarChart3,
   Zap,
   MousePointerClick,
 } from "lucide-react";
@@ -142,7 +143,7 @@ const AnimatedCounter = ({
   );
 };
 
-const HeroSection = () => {
+const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
   const phrases = ["85% Procesos Automatizados", "156 Horas ahorradas/año", "+3 Horas libres/semana"];
   const [currentPhrase, setCurrentPhrase] = useState(0);
   const [typingText, setTypingText] = useState("");
@@ -175,52 +176,67 @@ const HeroSection = () => {
       id="inicio"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 pt-20 text-center"
     >
-      <div className="absolute left-[10%] top-[20%] h-96 w-96 animate-[spin_10s_linear_infinite] rounded-full bg-purple-600/20 blur-[120px]" />
-      <div className="absolute right-[10%] top-[40%] h-96 w-96 animate-[spin_15s_linear_infinite_reverse] rounded-full bg-cyan-600/20 blur-[120px]" />
+      <div className="absolute left-[20%] top-[10%] h-[500px] w-[500px] animate-[spin_20s_linear_infinite] rounded-full bg-purple-700/10 blur-[150px]" />
+      <div className="absolute right-[20%] bottom-[10%] h-[600px] w-[600px] animate-[spin_25s_linear_infinite_reverse] rounded-full bg-purple-900/10 blur-[150px]" />
 
-      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="relative z-10 max-w-4xl">
+      <motion.div variants={staggerContainer} initial="hidden" animate="show" className="relative z-10 max-w-5xl">
         <motion.div
           variants={fadeInUp}
-          className="mb-6 inline-flex items-center rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-sm font-medium text-purple-300 backdrop-blur-md"
+          className="mb-8 inline-flex items-center border-b border-purple-500/30 pb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-purple-400"
         >
-          <Sparkles className="mr-2 h-4 w-4" />
-          IA + Automatización
+          Automatización + Sitios Web con Lógica
         </motion.div>
 
         <motion.h1
           variants={fadeInUp}
-          className="glitch-text mb-6 text-5xl font-extrabold tracking-tight text-white md:text-7xl lg:text-8xl"
-          data-text="Sistemas que operan tu negocio por ti"
+          className="mb-8 text-6xl font-black tracking-tighter text-white md:text-8xl lg:text-[110px] leading-[0.9]"
         >
-          <span className="bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">Sistemas que operan</span>{" "}
-          tu negocio por ti
+          <span className="text-purple-500">Sistemas que operan</span>
+          <br className="hidden md:block" /> tu negocio por ti.
         </motion.h1>
 
-        <motion.p variants={fadeInUp} className="mb-6 mx-auto max-w-2xl text-lg leading-relaxed text-gray-400">
+        <motion.p variants={fadeInUp} className="mb-10 mx-auto max-w-2xl text-xl font-light leading-relaxed text-gray-400 md:text-2xl">
           Diseño e implemento sistemas que automatizan procesos, estructuran información y permiten que tu negocio funcione con menos fricción.
         </motion.p>
 
-        <motion.div variants={fadeInUp} className="mb-12 h-8 text-xl font-medium text-gray-300 md:text-2xl">
-          <span className="border-r-2 border-cyan-400 pr-1">{typingText}</span>
+        <motion.div variants={fadeInUp} className="mb-14 h-8 text-lg font-medium text-gray-500 md:text-xl">
+          <span className="border-r-2 border-purple-500 pr-2">{typingText}</span>
         </motion.div>
 
-        <motion.div variants={fadeInUp} className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <motion.div variants={fadeInUp} className="flex flex-col items-center justify-center gap-6 sm:flex-row">
           <Button
             size="lg"
-            onClick={() => document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" })}
-            className="group h-14 bg-gradient-to-r from-purple-600 to-purple-800 px-8 text-lg hover:from-purple-500 hover:to-purple-700"
+            onClick={() => {
+              triggerProgress();
+              document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="group h-14 rounded-none bg-purple-600 px-10 text-lg font-semibold text-white transition-all hover:bg-purple-500 hover:scale-[1.02]"
           >
             Solicitar Diagnóstico
-            <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="ml-3 h-5 w-5 transition-transform group-hover:translate-x-2" />
           </Button>
           <Button
             size="lg"
             variant="outline"
-            onClick={() => document.getElementById("casos")?.scrollIntoView({ behavior: "smooth" })}
-            className="h-14 border-cyan-500/50 bg-transparent px-8 text-lg text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300"
+            onClick={() => {
+              triggerProgress();
+              document.getElementById("casos")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="h-14 rounded-none border-gray-700 bg-transparent px-10 text-lg font-medium text-gray-300 transition-all hover:border-purple-500 hover:bg-white/5 hover:text-white"
           >
             Ver Cómo Funciona
           </Button>
+        </motion.div>
+
+        {/* HERO IMAGE PLACEHOLDER */}
+        <motion.div variants={fadeInUp} className="mt-16 sm:mt-24 mx-auto w-full max-w-5xl">
+          <div className="relative aspect-video w-full border border-dashed border-gray-700 bg-black/40 flex flex-col items-center justify-center text-gray-500">
+            <div className="w-16 h-16 border rounded-full border-gray-600 flex items-center justify-center mb-4">
+              <span className="text-2xl">?</span>
+            </div>
+            <span className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">Espacio de Animación Central</span>
+            <span className="text-xs text-gray-500">Aquí incorporaremos la imagen o animación de fondo en el futuro</span>
+          </div>
         </motion.div>
       </motion.div>
 
@@ -252,162 +268,157 @@ const afterPoints = [
   "Tú solo te encargas de la logística y validar pagos cuando hace falta",
 ];
 
-const SuccessCases = () => {
+const SuccessCases = ({ triggerProgress }: { triggerProgress: () => void }) => {
   return (
-    <section id="casos" className="relative z-10 mx-auto max-w-6xl px-4 py-32">
+    <section id="casos" className="relative z-10 mx-auto max-w-7xl px-4 py-32">
       <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}>
-        <motion.div variants={fadeInUp} className="mb-16 text-center">
-          <h2 className="text-3xl font-bold md:text-5xl">
-            Impacto Real, <span className="text-cyan-400">Resultados Medibles</span>
+        <motion.div variants={fadeInUp} className="mb-24 text-center">
+          <h2 className="text-5xl font-black md:text-7xl lg:text-8xl tracking-tighter text-white">
+            Impacto <span className="text-purple-500 text-opacity-90">Real</span>.
           </h2>
-          <p className="mt-4 text-gray-400">Lo que pasa cuando un negocio deja de operar a mano.</p>
+          <p className="mt-6 text-lg font-light text-gray-400 md:text-2xl">Lo que pasa cuando un negocio deja de operar a mano.</p>
         </motion.div>
 
-        <div className="grid gap-8 md:grid-cols-2">
-          <motion.div variants={fadeScale}>
-            <Card className="h-full border-purple-500/20 bg-slate-900/50 backdrop-blur-xl">
-              <CardHeader className="flex flex-row items-center gap-4 pb-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-purple-500/20 text-purple-400">
-                  <ShoppingCart className="h-7 w-7" />
+        <div className="grid gap-8 lg:gap-8 md:grid-cols-2">
+          {/* Card 1: Charcutería */}
+          <motion.div variants={fadeInUp}>
+            <div className="flex h-full flex-col border-t-2 border-purple-500/40 bg-[#050507] p-8 lg:p-10 transition-colors hover:bg-white/[0.02]">
+              <div className="flex flex-row items-center gap-5 pb-8">
+                <div className="flex h-16 w-16 items-center justify-center bg-purple-500/10 text-purple-400">
+                  <ShoppingCart className="h-8 w-8" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl text-white">Charcutería Ramiz</CardTitle>
-                  <p className="text-sm text-purple-300">Retail & Atención al Cliente · Venezuela</p>
+                  <h3 className="text-3xl font-bold tracking-tight text-white">Charcutería Ramiz</h3>
+                  <p className="mt-1 text-xs font-semibold tracking-widest text-gray-500 uppercase">Retail & Atención al Cliente</p>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-8 grid grid-cols-3 gap-4 divide-x divide-gray-800 rounded-xl border border-gray-800 bg-slate-950/50 p-4">
-                  <div className="text-center">
-                    <p className="text-3xl font-bold text-white">
+              </div>
+              
+              <div className="flex-1">
+                <div className="mb-10 grid grid-cols-3 gap-0 border border-gray-800 bg-black/50">
+                  <div className="border-r border-gray-800 p-4 lg:p-6 text-center">
+                    <p className="text-4xl font-black text-white">
                       <AnimatedCounter value={24} suffix="/7" />
                     </p>
-                    <p className="mt-1 text-xs text-gray-400">Atención al cliente</p>
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-gray-500">Atención al cliente</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-3xl font-bold text-cyan-400">
+                  <div className="border-r border-gray-800 p-4 lg:p-6 text-center">
+                    <p className="text-4xl font-black text-purple-500">
                       <AnimatedCounter value={80} suffix="%" />
                     </p>
-                    <p className="mt-1 text-xs text-gray-400">Cobros gestionados</p>
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-gray-500">Cobros gestionados</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-3xl font-bold text-purple-400">
+                  <div className="p-4 lg:p-6 text-center">
+                    <p className="text-4xl font-black text-purple-400">
                       +<AnimatedCounter value={3} suffix="h" />
                     </p>
-                    <p className="mt-1 text-xs text-gray-400">Ahorro diario</p>
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-gray-500">Ahorro Diario</p>
                   </div>
                 </div>
 
-                <div className="mb-8 grid gap-6 md:grid-cols-2">
-                  <div className="relative h-52 overflow-hidden rounded-xl border border-gray-800 bg-slate-950/50">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/60 via-slate-900 to-cyan-900/40" />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-purple-500/20 text-3xl text-purple-300">
-                        🥩
-                      </div>
-                      <p className="text-sm font-semibold text-white">Charcutería Ramiz</p>
-                      <p className="mt-1 text-xs text-gray-400">Foto del negocio próximamente</p>
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
-                  </div>
-                  <div className="h-52 w-full rounded-xl border border-gray-800 bg-slate-950/30 p-4">
-                    <p className="mb-2 text-xs text-gray-400">Eficiencia operativa (antes vs. después)</p>
-                    <ResponsiveContainer width="100%" height="90%">
+                <div className="mb-10 block w-full border border-gray-800 bg-black/30 p-6">
+                  <p className="mb-4 text-xs font-bold uppercase tracking-widest text-gray-500">Eficiencia operativa (antes vs. después)</p>
+                  <div className="h-40 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={barData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
-                        <XAxis dataKey="name" stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
-                        <RechartsTooltip
-                          cursor={{ fill: "#1f2937" }}
-                          contentStyle={{ backgroundColor: "#0f172a", borderColor: "#1f2937" }}
-                        />
-                        <Bar dataKey="eficiencia" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                        <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickLine={false} axisLine={false} />
+                        <RechartsTooltip cursor={{ fill: "#1f2937" }} contentStyle={{ backgroundColor: "#000", borderColor: "#1f2937", borderRadius: 0 }} />
+                        <Bar dataKey="eficiencia" fill="#8b5cf6" radius={[0, 0, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-xl border border-red-900/30 bg-red-950/20 p-5">
-                    <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-red-400">
-                      <XCircle className="h-4 w-4" /> Antes del agente
+                <div className="grid gap-6 lg:grid-cols-2">
+                  <div>
+                    <p className="mb-3 border-b border-red-900/30 pb-2 text-[11px] font-bold uppercase tracking-wider text-red-500">
+                      Antes del agente
                     </p>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {beforePoints.map((p, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs text-gray-400">
-                          <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-red-500/60" />
+                        <li key={i} className="flex items-start gap-3 text-xs leading-relaxed text-gray-400">
+                          <span className="mt-1.5 h-1 w-1 shrink-0 bg-red-500/50" />
                           {p}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-xl border border-cyan-900/30 bg-cyan-950/20 p-5">
-                    <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-cyan-400">
-                      <Check className="h-4 w-4" /> Con el agente activo
+                  <div>
+                    <p className="mb-3 border-b border-purple-900/40 pb-2 text-[11px] font-bold uppercase tracking-wider text-purple-400">
+                      Con el agente activo
                     </p>
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {afterPoints.map((p, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs text-gray-300">
-                          <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
+                        <li key={i} className="flex items-start gap-3 text-xs leading-relaxed text-gray-300">
+                          <span className="mt-1.5 h-1 w-1 shrink-0 bg-purple-500" />
                           {p}
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
 
-          <motion.div variants={fadeScale}>
-            <Card className="h-full border-cyan-500/20 bg-slate-900/50 backdrop-blur-xl">
-              <CardHeader className="flex flex-row items-center gap-4 pb-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400">
-                  <Globe className="h-7 w-7" />
+          {/* Card 2: Web */}
+          <motion.div variants={fadeInUp}>
+            <div className="flex h-full flex-col border-t-2 border-gray-700 bg-[#050507] p-8 lg:p-10 transition-colors hover:bg-white/[0.02]">
+              <div className="flex flex-row items-center gap-5 pb-8">
+                <div className="flex h-16 w-16 items-center justify-center bg-white/5 text-gray-300">
+                  <Globe className="h-8 w-8" />
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-2xl text-white">Este sitio web</CardTitle>
-                    <span className="flex items-center gap-1 rounded-full bg-green-500/20 px-2 py-0.5 text-[10px] font-bold text-green-400">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-400" /> EN VIVO
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-3xl font-bold tracking-tight text-white">Este sitio web</h3>
+                    <span className="flex items-center gap-1.5 border border-green-500/30 bg-green-500/10 px-2 py-1 text-[9px] font-black uppercase tracking-widest text-green-400">
+                      <span className="h-1.5 w-1.5 animate-pulse bg-green-400" /> EN VIVO
                     </span>
                   </div>
-                  <p className="text-sm text-cyan-300">Sitio Web con Lógica · Lo estás viendo ahora</p>
+                  <p className="mt-1 text-xs font-semibold tracking-widest text-gray-500 uppercase">Sitio Web con Lógica · Lo estás viendo ahora</p>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-6 rounded-xl border border-cyan-900/40 bg-cyan-950/20 p-4">
-                  <p className="text-sm leading-relaxed text-cyan-300">
-                    El mejor ejemplo de lo que construyo es <span className="font-semibold text-white">el sitio en el que estás ahora mismo</span>. No es una captura de pantalla. No es una demo. Es el producto real, funcionando.
+              </div>
+
+              <div className="flex-1">
+                <div className="mb-10 bg-white/5 p-6 border-l-2 border-gray-500">
+                  <p className="text-sm font-light leading-relaxed text-gray-300">
+                    El mejor ejemplo de lo que construyo es <strong className="font-bold text-white">el sitio en el que estás ahora mismo</strong>. No es una captura de pantalla. No es una demo. Es el producto real, funcionando.
                   </p>
                 </div>
 
-                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-500">Funcionalidades activas en esta página</p>
-                <ul className="space-y-2.5">
-                  {[
-                    { icon: MousePointerClick, text: "Botones que hacen scroll suave a secciones específicas" },
-                    { icon: Zap, text: "Contadores animados que se activan al entrar al viewport" },
-                    { icon: CheckCircle2, text: "Formulario multi-paso con validación y efecto confetti" },
-                    { icon: Globe, text: "Efecto de escritura (typing) que cicla métricas reales" },
-                    { icon: Sparkles, text: "Animaciones de entrada y efecto glitch en el título" },
-                  ].map(({ icon: Icon, text }, i) => (
-                    <li key={i} className="flex items-start gap-3 text-xs text-gray-300">
-                      <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-400" />
-                      {text}
-                    </li>
-                  ))}
-                </ul>
+                <div className="mb-10">
+                  <p className="mb-5 text-[11px] font-bold uppercase tracking-widest text-gray-500">Funcionalidades activas en esta página</p>
+                  <ul className="space-y-4">
+                    {[
+                      { icon: MousePointerClick, text: "Botones que hacen scroll suave a secciones específicas" },
+                      { icon: Zap, text: "Contadores animados que se activan al entrar al viewport" },
+                      { icon: CheckCircle2, text: "Formulario multi-paso con validación y efecto confetti" },
+                      { icon: Globe, text: "Efecto de escritura (typing) que cicla métricas reales" },
+                      { icon: Zap, text: "Animaciones de entrada y microinteracciones" },
+                    ].map(({ icon: Icon, text }, i) => (
+                      <li key={i} className="flex items-start gap-4 text-sm font-light text-gray-400">
+                        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-white/40" />
+                        {text}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-                <div className="mt-6 rounded-xl border border-gray-800 bg-slate-950/50 p-4 text-center">
-                  <p className="text-xs text-gray-400">¿Quieres un sitio así para tu negocio?</p>
+                <div className="mt-auto border border-gray-800 bg-black/40 p-6 text-center">
+                  <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-400">¿Quieres un sitio así para tu negocio?</p>
                   <Button
-                    size="sm"
-                    onClick={() => document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" })}
-                    className="mt-3 bg-gradient-to-r from-cyan-600 to-cyan-700 text-xs hover:from-cyan-500 hover:to-cyan-600"
+                    size="lg"
+                    onClick={() => {
+                      triggerProgress();
+                      document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="w-full rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200"
                   >
-                    Solicitar diagnóstico <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                    Solicitar diagnóstico <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
         </div>
       </motion.div>
@@ -448,56 +459,80 @@ const services = [
     features: ["Diseño del sistema completo", "Integración de herramientas", "Base de datos estructurada", "Escalable desde el inicio"],
     color: "violet",
   },
+  {
+    id: "reports",
+    icon: BarChart3,
+    title: "Reportes Automatizados para Agencias",
+    description:
+      "Entrega reportes a clientes sin trabajo manual: dashboards, resúmenes semanales y métricas en un solo lugar, listos para enviar.",
+    features: [
+      "Dashboards y KPIs por cliente",
+      "Reportes semanales/mensuales automáticos",
+      "Consolidación multi-plataforma",
+      "Entrega lista para compartir",
+    ],
+    color: "cyan",
+  },
 ];
 
-const colorMap: Record<string, { border: string; bg: string; text: string }> = {
-  purple: { border: "border-purple-500/20", bg: "bg-purple-500/10", text: "text-purple-400" },
-  cyan: { border: "border-cyan-500/20", bg: "bg-cyan-500/10", text: "text-cyan-400" },
-  violet: { border: "border-violet-500/20", bg: "bg-violet-500/10", text: "text-violet-400" },
-};
-
-const ServicesSection = () => (
-  <section id="sistemas" className="relative z-10 mx-auto max-w-6xl px-4 py-24">
-    <div className="absolute top-0 h-px w-full bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) => (
+  <section id="sistemas" className="relative z-10 mx-auto max-w-7xl px-4 py-24">
+    <div className="absolute top-0 h-px w-full bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
     <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={staggerContainer}>
-      <motion.div variants={fadeInUp} className="mb-14 text-center">
-        <h2 className="text-3xl font-bold md:text-5xl">
-          Lo que <span className="text-purple-400">construyo</span>
+      <motion.div variants={fadeInUp} className="mb-20 text-center">
+        <h2 className="text-5xl font-black md:text-6xl tracking-tighter">
+          Lo que <span className="text-purple-500">Construyo</span>.
         </h2>
-        <p className="mt-4 text-gray-400">Elige el tipo de solución que necesita tu negocio.</p>
+        <p className="mt-4 text-lg font-light text-gray-400">Elige el tipo de solución que necesita tu negocio.</p>
       </motion.div>
-      <div className="grid gap-6 md:grid-cols-3">
-        {services.map((s) => {
-          const c = colorMap[s.color];
+      <div className="grid gap-0 md:grid-cols-2 lg:grid-cols-4 border-l border-t border-gray-800">
+        {services.map((s, index) => {
           const Icon = s.icon;
+          const isAccent = index === 0;
           return (
-            <motion.div key={s.id} variants={fadeScale}>
-              <Card className={`flex h-full flex-col border ${c.border} bg-slate-900/50 backdrop-blur-xl`}>
-                <CardHeader className="pb-3">
-                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${c.bg} ${c.text}`}>
+            <motion.div key={s.id} variants={fadeScale} className="border-r border-b border-gray-800 bg-[#050507] group relative flex h-full flex-col transition-all hover:bg-[rgba(255,255,255,0.02)]">
+              <div className="p-8">
+                <div className="flex justify-between items-start">
+                  <div className={`mb-6 flex h-14 w-14 items-center justify-center border ${isAccent ? 'border-purple-500 bg-purple-500/10 text-purple-400' : 'border-gray-700 bg-white/5 text-gray-400'}`}>
                     <Icon className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-xl text-white">{s.title}</CardTitle>
-                  <p className="text-sm leading-relaxed text-gray-400">{s.description}</p>
-                </CardHeader>
-                <CardContent className="flex flex-1 flex-col justify-between">
-                  <ul className="mb-6 space-y-2">
-                    {s.features.map((f, i) => (
-                      <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
-                        <Check className={`h-3.5 w-3.5 shrink-0 ${c.text}`} />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    variant="outline"
-                    className={`w-full border ${c.border} ${c.text} hover:${c.bg}`}
-                    onClick={() => document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" })}
-                  >
-                    Quiero esto <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </CardContent>
-              </Card>
+                </div>
+                
+                {/* SERVICES IMAGE PLACEHOLDER */}
+                <div className="mb-6 w-full h-32 border border-dashed border-gray-800 bg-[#07070a] flex items-center justify-center text-center p-3 opacity-60">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-gray-600">Espacio Visual<br/>Secundario</span>
+                </div>
+
+                <h3 className="mb-3 text-xl font-bold tracking-tight text-white">{s.title}</h3>
+                <p className="mb-6 text-sm font-light leading-relaxed text-gray-400">{s.description}</p>
+                
+                <ul className="mb-8 space-y-3">
+                  {s.features.slice(0, 3).map((f, i) => (
+                    <li key={i} className="flex items-start gap-3 text-xs font-light text-gray-300">
+                      <span className={`mt-1.5 h-1 w-1 shrink-0 ${isAccent ? 'bg-purple-500' : 'bg-gray-600'}`} />
+                      {f}
+                    </li>
+                  ))}
+                  {s.features.length > 3 && (
+                    <li className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-500 pt-2">
+                       +{s.features.length - 3} Características
+                    </li>
+                  )}
+                </ul>
+              </div>
+              
+              <div className="mt-auto px-8 pb-8">
+                <Button
+                 variant="ghost"
+                 className={`w-full h-12 rounded-none border ${isAccent ? 'border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white' : 'border-gray-800 bg-transparent text-gray-400 hover:bg-white hover:text-black'} text-[10px] font-bold uppercase tracking-widest transition-all`}
+                 onClick={() => {
+                   triggerProgress();
+                   document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
+                 }}
+                >
+                  Quiero esto <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </motion.div>
           );
         })}
@@ -506,10 +541,11 @@ const ServicesSection = () => (
   </section>
 );
 
-const MultiStepForm = () => {
-  const [step, setStep] = useState(1);
+const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => {
+  const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [formType, setFormType] = useState<"client" | "student">("client");
   const [formData, setFormData] = useState({
     service: "",
     volume: "",
@@ -518,6 +554,8 @@ const MultiStepForm = () => {
     tools: "",
     name: "",
     contact: "",
+    studentReason: "",
+    studentPay: "",
   });
 
   const createConfetti = () => {
@@ -559,6 +597,13 @@ const MultiStepForm = () => {
     }, 1500);
   };
 
+  const chooseService = (service: string) => {
+    triggerProgress();
+    setFormType("client");
+    setFormData((prev) => ({ ...prev, service }));
+    setStep(1);
+  };
+
   return (
     <section id="como-funciona" className="relative z-10 mx-auto max-w-4xl px-4 py-20">
       <div id="iniciar" />
@@ -567,33 +612,41 @@ const MultiStepForm = () => {
         whileInView="show"
         viewport={{ once: true }}
         variants={fadeInUp}
-        className="rounded-3xl border border-gray-800/50 bg-slate-900/60 p-8 shadow-2xl backdrop-blur-xl md:p-12"
+        className="border-t-2 border-purple-500/40 bg-[#050507] p-8 shadow-2xl md:p-12 transition-all relative overflow-hidden"
       >
-        <div className="mb-10 text-center">
-          <h2 className="mb-2 text-3xl font-bold">Iniciemos tu transformación</h2>
-          <p className="text-gray-400">Completa este breve formulario para un diagnóstico preciso.</p>
+        <div className="mb-14 border-b border-gray-800 pb-8 text-center">
+          <h2 className="mb-2 text-4xl font-black md:text-5xl">
+            {formType === "student" && step > 0 ? "Únete a la academia" : "Iniciemos tu transformación"}
+          </h2>
+          <p className="text-gray-400">
+            {formType === "student" && step > 0
+              ? "Cuéntame por qué quieres aprender y asegura tu cupo."
+              : "Completa este breve formulario para un diagnóstico preciso."}
+          </p>
         </div>
 
-        <div className="mb-8 flex items-center justify-center space-x-4">
-          {[1, 2, 3].map((num) => (
-            <div key={num} className="flex items-center">
-              <div
-                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
-                  step >= num
-                    ? "border-purple-500 bg-purple-500/20 text-purple-400"
-                    : "border-gray-700 bg-gray-800 text-gray-500"
-                } font-bold transition-colors`}
-              >
-                {step > num ? <CheckCircle2 className="h-6 w-6" /> : num}
-              </div>
-              {num < 3 && (
+        {step > 0 && (
+          <div className="mb-10 flex items-center justify-center space-x-2">
+            {[1, 2, 3].map((num) => (
+              <div key={num} className="flex items-center">
                 <div
-                  className={`mx-2 h-1 w-12 rounded-full ${step > num ? "bg-purple-500/50" : "bg-gray-800"}`}
-                />
-              )}
-            </div>
-          ))}
-        </div>
+                  className={`flex h-10 w-10 items-center justify-center border text-xs ${
+                    step >= num
+                      ? "border-purple-500 bg-purple-500/10 text-purple-400 font-bold"
+                      : "border-gray-800 bg-[#050507] text-gray-600"
+                  } transition-colors`}
+                >
+                  {step > num ? <CheckCircle2 className="h-5 w-5" /> : num}
+                </div>
+                {num < 3 && (
+                  <div
+                    className={`mx-2 h-px w-8 ${step > num ? "bg-purple-500" : "bg-gray-800"}`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="min-h-[320px]">
           <AnimatePresence mode="wait">
@@ -604,25 +657,90 @@ const MultiStepForm = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center justify-center py-16 text-center"
               >
-                <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-green-500/20 text-green-400">
-                  <CheckCircle2 className="h-12 w-12" />
+                <div className="mb-6 flex h-24 w-24 items-center justify-center border border-green-500/30 bg-green-500/10 text-green-400">
+                  <CheckCircle2 className="h-10 w-10" />
                 </div>
-                <h3 className="mb-2 text-2xl font-bold">¡Solicitud recibida!</h3>
+                <h3 className="mb-2 text-3xl font-black">¡Solicitud recibida!</h3>
                 <p className="text-gray-400">Me pondré en contacto contigo pronto para coordinar tu diagnóstico.</p>
               </motion.div>
-            ) : step === 1 ? (
+            ) : step === 0 ? (
+              <motion.div
+                key="pick"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-8"
+              >
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold tracking-tight text-white">¿Qué quieres construir primero?</h3>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500">
+                    Elige una opción
+                  </p>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => chooseService("agente")}
+                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:border-purple-500/40 hover:bg-white/[0.02]"
+                  >
+                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-purple-500/20 bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20">
+                      <Bot className="h-6 w-6" />
+                    </div>
+                    <p className="text-lg font-bold text-white">Agente de Ventas 24/7</p>
+                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">Automatiza atención, precios, pedidos y cobros.</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => chooseService("web")}
+                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:bg-white/[0.02]"
+                  >
+                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-gray-700 bg-white/5 text-gray-300 group-hover:bg-white/10">
+                      <Code className="h-6 w-6" />
+                    </div>
+                    <p className="text-lg font-bold text-white">Sitio Web con Lógica</p>
+                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">No es diseño: es software funcionando.</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => chooseService("arquitectura")}
+                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:bg-white/[0.02]"
+                  >
+                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-gray-700 bg-white/5 text-gray-300 group-hover:bg-white/10">
+                      <Cpu className="h-6 w-6" />
+                    </div>
+                    <p className="text-lg font-bold text-white">Arquitectura Integral</p>
+                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">Todo conectado: agente + web + data + automatización.</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => chooseService("no-se")}
+                    className="group border border-gray-800 bg-black/40 p-6 text-left transition-all hover:border-gray-600"
+                  >
+                    <div className="mb-5 flex h-14 w-14 items-center justify-center border border-gray-800 bg-black text-gray-500 group-hover:text-white">
+                      <ArrowRight className="h-6 w-6" />
+                    </div>
+                    <p className="text-lg font-bold text-white">No estoy seguro</p>
+                    <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">Quiero un diagnóstico y que me digas el camino.</p>
+                  </button>
+                </div>
+              </motion.div>
+            ) : formType === "client" && step === 1 ? (
               <motion.div
                 key="step1"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-5"
+                className="space-y-6"
               >
-                <h3 className="text-lg font-semibold text-white">Cuéntame sobre tu negocio</h3>
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Cuéntame sobre tu negocio</h3>
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-300">¿Qué tipo de solución te interesa?</label>
+                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Qué tipo de solución te interesa?</label>
                   <select
-                    className="w-full rounded-md border border-gray-700 bg-slate-800 px-4 py-3 text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                     value={formData.service}
                     onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                   >
@@ -634,9 +752,9 @@ const MultiStepForm = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-300">Volumen de mensajes o clientes por día</label>
+                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Volumen de mensajes o clientes por día</label>
                   <select
-                    className="w-full rounded-md border border-gray-700 bg-slate-800 px-4 py-3 text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                     value={formData.volume}
                     onChange={(e) => setFormData({ ...formData, volume: e.target.value })}
                   >
@@ -647,68 +765,170 @@ const MultiStepForm = () => {
                     <option value="+100">Más de 100 por día</option>
                   </select>
                 </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-300">Inversión mensual disponible</label>
+                <div className="pb-6">
+                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Presupuesto disponible</label>
                   <select
-                    className="w-full rounded-md border border-gray-700 bg-slate-800 px-4 py-3 text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
                     value={formData.budget}
                     onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                   >
                     <option value="">Selecciona una opción</option>
-                    <option value="$350+">$350 / mes</option>
-                    <option value="$700+">$700 / mes</option>
-                    <option value="$1500+">$1,500+ / mes</option>
+                    <option value="$400+">$400 / mes</option>
+                    <option value="$800+">$800 / mes</option>
+                    <option value="$1600+">$1,600+ / mes</option>
                   </select>
                 </div>
-                <div className="flex justify-end pt-2">
+                <div className="flex justify-between border-t border-gray-800 pt-6">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setFormData((prev) => ({ ...prev, service: "" }));
+                      setStep(0);
+                    }}
+                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
+                  >
+                    Atrás
+                  </Button>
                   <Button
                     disabled={!formData.service || !formData.volume || !formData.budget}
-                    onClick={() => setStep(2)}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    onClick={() => {
+                      triggerProgress();
+                      setStep(2);
+                    }}
+                    className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
                   >
                     Continuar <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </motion.div>
-            ) : step === 2 ? (
+            ) : formType === "client" && step === 2 ? (
               <motion.div
                 key="step2"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-5"
+                className="space-y-6"
               >
-                <h3 className="text-lg font-semibold text-white">Tu situación actual</h3>
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Tu situación actual</h3>
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-300">¿Cuál es el proceso que más tiempo te consume hoy?</label>
+                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Cuál es el proceso que más tiempo te consume hoy?</label>
                   <Textarea
-                    placeholder="Ej: Respondo los mismos mensajes 30 veces al día, proceso pedidos a mano, cobro sin sistema..."
+                    placeholder="Ej: Respondo los mismos mensajes 30 veces al día, proceso pedidos a mano..."
                     value={formData.problem}
                     onChange={(e) => setFormData({ ...formData, problem: e.target.value })}
-                    className="min-h-[110px] border-gray-700 bg-slate-800 text-white placeholder:text-gray-500 focus-visible:ring-purple-500"
+                    className="min-h-[140px] rounded-none border-gray-800 bg-[#050507] text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
                   />
                 </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-300">
-                    ¿Qué herramientas usas actualmente? <span className="text-gray-500">(opcional)</span>
+                <div className="pb-6">
+                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
+                    ¿Qué herramientas usas actualmente? <span className="text-gray-700">(opcional)</span>
                   </label>
                   <Input
-                    placeholder="Ej: WhatsApp, Google Sheets, Instagram, ninguna..."
+                    placeholder="Ej: WhatsApp, Excel, nada..."
                     value={formData.tools}
                     onChange={(e) => setFormData({ ...formData, tools: e.target.value })}
-                    className="border-gray-700 bg-slate-800 py-6 text-white placeholder:text-gray-500 focus-visible:ring-purple-500"
+                    className="rounded-none border-gray-800 bg-[#050507] py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
                   />
                 </div>
-                <div className="flex justify-between pt-2">
-                  <Button variant="ghost" onClick={() => setStep(1)} className="text-gray-400 hover:text-white">
+                <div className="flex justify-between border-t border-gray-800 pt-6">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setStep(1)}
+                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
+                  >
                     Atrás
                   </Button>
                   <Button
                     disabled={!formData.problem}
-                    onClick={() => setStep(3)}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    onClick={() => {
+                      triggerProgress();
+                      setStep(3);
+                    }}
+                    className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
                   >
-                    Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    Solo falta 1 paso <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </motion.div>
+            ) : formType === "student" && step === 1 ? (
+              <motion.div
+                key="student-step1"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Tus motivaciones</h3>
+                <div>
+                  <label className="mb-4 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Por qué quieres aprender a construir esto?</label>
+                  <div className="flex flex-col gap-3">
+                    {[
+                      "Crear / Escalar Servicio de Automatización",
+                      "Dominar IA + Web para mi carrera",
+                      "Implementar Sistemas en Mi Negocio",
+                      "Tengo una idea SaaS",
+                    ].map((reason) => (
+                      <button
+                        key={reason}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ ...formData, studentReason: reason });
+                          triggerProgress();
+                          setStep(2);
+                        }}
+                        className="w-full border border-gray-800 bg-[#050507] p-5 text-left text-sm font-bold text-white transition-all hover:bg-purple-500/10 hover:border-purple-500/50"
+                      >
+                        {reason}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-between border-t border-gray-800 pt-6">
+                  <Button
+                    variant="ghost"
+                    onClick={() => { setStep(0); setFormType("client"); }}
+                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
+                  >
+                    Volver y cancelar
+                  </Button>
+                </div>
+              </motion.div>
+            ) : formType === "student" && step === 2 ? (
+              <motion.div
+                key="student-step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Tu inversión</h3>
+                <div className="pb-6">
+                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Cuánto estarías dispuesto a invertir en tu formación?</label>
+                  <select
+                    className="w-full rounded-none border border-gray-800 bg-[#050507] px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                    value={formData.studentPay}
+                    onChange={(e) => setFormData({ ...formData, studentPay: e.target.value })}
+                  >
+                    <option value="">Selecciona una opción</option>
+                    <option value="$50-$100">Entre $50 y $100</option>
+                    <option value="$100-$300">Entre $100 y $300</option>
+                    <option value="$300+">Más de $300 (Avanzado/Mentoría privada)</option>
+                  </select>
+                </div>
+                <div className="flex justify-between border-t border-gray-800 pt-6">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setStep(1)}
+                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
+                  >
+                    Atrás
+                  </Button>
+                  <Button
+                    disabled={!formData.studentPay}
+                    onClick={() => { triggerProgress(); setStep(3); }}
+                    className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
+                  >
+                    Solo falta 1 paso <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </motion.div>
@@ -718,43 +938,49 @@ const MultiStepForm = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-5"
+                className="space-y-6"
               >
-                <h3 className="text-lg font-semibold text-white">¿Dónde te contacto?</h3>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <Input
-                    placeholder="Tu nombre"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="border-gray-700 bg-slate-800 py-6 text-white placeholder:text-gray-500 focus-visible:ring-purple-500"
-                  />
-                  <Input
-                    placeholder="WhatsApp o Email"
-                    required
-                    value={formData.contact}
-                    onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                    className="border-gray-700 bg-slate-800 py-6 text-white placeholder:text-gray-500 focus-visible:ring-purple-500"
-                  />
-                  <div className="flex justify-between pt-2">
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Último paso</h3>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Tu Nombre</label>
+                    <Input
+                      placeholder="Identidad"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="rounded-none border-gray-800 bg-[#050507] py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                    />
+                  </div>
+                  <div className="pb-6">
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Forma de contacto preferida</label>
+                    <Input
+                      placeholder="WhatsApp o Email"
+                      required
+                      value={formData.contact}
+                      onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                      className="rounded-none border-gray-800 bg-[#050507] py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                    />
+                  </div>
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
                     <Button
                       type="button"
                       variant="ghost"
                       onClick={() => setStep(2)}
-                      className="text-gray-400 hover:text-white"
+                      className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
                     >
                       Atrás
                     </Button>
                     <Button
                       type="submit"
                       disabled={loading || !formData.name || !formData.contact}
-                      className="bg-gradient-to-r from-purple-600 to-cyan-600 px-8 hover:from-purple-500 hover:to-cyan-500"
+                      className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200"
                     >
                       {loading ? (
                         "Enviando..."
                       ) : (
                         <>
-                          <span>Enviar diagnóstico</span> <Send className="ml-2 h-4 w-4" />
+                          <span>Finalizar y Enviar</span> <Send className="ml-2 h-4 w-4" />
                         </>
                       )}
                     </Button>
@@ -771,25 +997,31 @@ const MultiStepForm = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="mt-6 rounded-2xl border border-gray-700/40 bg-slate-900/30 px-6 py-5 backdrop-blur-md"
+        className="mt-6 flex flex-col md:flex-row items-start md:items-center justify-between border-t border-gray-800 bg-transparent py-5"
       >
-        <div className="flex items-center gap-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-gray-400">
+        <div className="flex items-center gap-4 mb-4 md:mb-0">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[#050507] text-gray-400 border border-gray-800">
             <GraduationCap className="h-5 w-5" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-gray-300">¿Quieres aprender a construir esto tú mismo?</p>
-            <p className="mt-0.5 text-xs text-gray-500">
-              Estoy preparando algo para enseñar cómo se construyen estos sistemas desde cero.
+          <div>
+            <p className="text-sm font-bold text-gray-200">¿Quieres aprender a construir esto tú mismo?</p>
+            <p className="mt-1 text-xs text-gray-500">
+              Estoy preparando material para enseñar cómo se construyen estos sistemas.
             </p>
           </div>
-          <a
-            href="#"
-            className="shrink-0 rounded-lg border border-gray-700 px-4 py-2 text-xs font-medium text-gray-400 transition-colors hover:border-purple-500/50 hover:text-purple-400"
-          >
-            Unirme a la lista →
-          </a>
         </div>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setFormType("student");
+            setStep(1);
+            document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="cursor-pointer border border-purple-500/30 text-purple-400 px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:bg-purple-500 hover:text-white transition-all w-full md:w-auto text-center"
+        >
+          Lista de espera
+        </button>
       </motion.div>
     </section>
   );
@@ -797,40 +1029,44 @@ const MultiStepForm = () => {
 
 const TradingCard = () => {
   return (
-    <section className="relative z-10 mx-auto max-w-lg px-4 py-20">
-      <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeInUp} className="mb-10 text-center">
-        <h2 className="text-3xl font-bold">
-          El Arquitecto <span className="text-purple-400">detrás del sistema</span>
+    <section className="relative z-10 mx-auto max-w-lg px-4 py-32">
+      <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeInUp} className="mb-14 text-center">
+        <h2 className="text-5xl font-black md:text-6xl tracking-tighter">
+          El <span className="text-purple-500 text-opacity-80">Arquitecto</span>.
         </h2>
-        <p className="mt-3 text-sm text-gray-400">La persona que diseña e implementa todo esto.</p>
+        <p className="mt-4 text-sm font-semibold tracking-widest text-gray-500 uppercase">Detrás del ecosistema</p>
       </motion.div>
 
       <motion.div
-        initial={{ rotateY: -20, opacity: 0 }}
+        initial={{ rotateY: -10, opacity: 0 }}
         whileInView={{ rotateY: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="group relative mx-auto w-full max-w-sm"
+        className="group mx-auto w-full max-w-sm"
         style={{ perspective: "1000px" }}
       >
-        <div className="trading-card rounded-2xl border-2 border-slate-700 bg-slate-900 p-8 shadow-2xl transition-all duration-500 hover:scale-105 hover:border-purple-400 hover:shadow-[0_0_40px_rgba(139,92,246,0.4)]">
-          <div className="shimmer pointer-events-none absolute inset-0 z-20 mix-blend-color-dodge rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-          <div className="relative z-10 flex flex-col items-center text-center">
-            <div className="mb-6 flex justify-center">
-              <div className="relative h-32 w-32 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 p-1">
-                <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-900">
-                  <span className="bg-gradient-to-br from-purple-400 to-cyan-400 bg-clip-text text-4xl font-black text-transparent">RC</span>
-                </div>
+        <div className="trading-card border-t-4 border-purple-500/80 bg-[#050507] p-8 lg:p-10 shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(139,92,246,0.1)]">
+          <div className="relative z-10 flex flex-col uppercase tracking-widest text-left">
+            <h3 className="text-4xl font-black text-white mb-1 tracking-tighter normal-case">@Ramiz.Componte</h3>
+            <p className="text-[10px] font-bold text-gray-500 mb-8">Arquitecto de Automatización</p>
+            
+            <div className="h-px w-full bg-gray-800 mb-8" />
+
+            <div className="gap-4 text-[10px] font-bold text-gray-600 mb-8">
+              <div>
+                <p className="text-purple-400 mb-3 uppercase tracking-widest">Especialidad Central</p>
+                <ul className="text-white space-y-2 normal-case text-xs tracking-normal font-light">
+                  <li className="flex items-center gap-2"><span className="w-1 h-1 bg-purple-500"/> Agentes de Inteligencia Artificial</li>
+                  <li className="flex items-center gap-2"><span className="w-1 h-1 bg-purple-500"/> Sitios Web con Lógica Aplicada</li>
+                  <li className="flex items-center gap-2"><span className="w-1 h-1 bg-purple-500"/> Automatización Integral de Negocios</li>
+                </ul>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-white">@Ramiz.Componte</h3>
-            <p className="mt-1 max-w-[240px] text-sm font-medium leading-snug text-cyan-400">
-              Arquitecto de Automatización y Sistemas de Ventas · Experto en Agentes IA
-            </p>
-            <div className="mt-6 w-full rounded-xl border border-slate-800 bg-slate-950/60 p-4 text-left">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-500">Foto próximamente</p>
-              <div className="flex h-24 w-full items-center justify-center rounded-lg bg-gradient-to-br from-purple-900/40 to-cyan-900/30">
-                <span className="text-xs text-gray-500">Imagen de perfil real</span>
+
+            <div className="w-full border border-gray-800 bg-black/40 p-5 mt-auto text-left">
+              <p className="mb-3 text-[9px] font-bold text-gray-500">PERFIL CONFIDENCIAL</p>
+              <div className="flex h-32 w-full items-center justify-center bg-[#030304] border-t border-gray-800">
+                <span className="text-[10px] font-light tracking-[0.3em] text-gray-600 text-center">FOTOGRAFÍA<br/>PENDIENTE</span>
               </div>
             </div>
           </div>
@@ -840,37 +1076,176 @@ const TradingCard = () => {
   );
 };
 
-const Dashboard = () => {
+const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+    <path d="M21.5 7.06c-1.49-.03-2.9-.52-4.02-1.41A5.74 5.74 0 0 1 15.5 1h-3.3v13.2a3.05 3.05 0 0 1-1.8 2.78 3.05 3.05 0 0 1-3.9-1.12 3.05 3.05 0 0 1 2.35-4.78c.3 0 .6.04.88.12V7.75a6.84 6.84 0 0 0-1.03-.08 6.35 6.35 0 0 0-6.27 7.5 6.35 6.35 0 0 0 9.77 3.9 6.33 6.33 0 0 0 3-5.44V8.1c1.2.83 2.63 1.28 4.1 1.28h1.2V7.06Z" />
+  </svg>
+);
+
+type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+};
+
+const ChatWidget = () => {
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: "m1",
+      role: "assistant",
+      text: "Hola, soy el asistente de Ramiz. Cuéntame qué quieres construir y te guío.",
+    },
+  ]);
+  const endRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [open, messages.length]);
+
+  const sendMessage = (text: string) => {
+    const cleaned = text.trim();
+    if (!cleaned) return;
+
+    setMessages((prev) => [
+      ...prev,
+      { id: `u-${Date.now()}`, role: "user", text: cleaned },
+      {
+        id: `a-${Date.now()}-r`,
+        role: "assistant",
+        text: "Recibido. En breve conectaremos este chat al sistema para responder automáticamente. Por ahora, déjame tu objetivo y lo estructuramos.",
+      },
+    ]);
+    setInput("");
+  };
+
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#0F172A] text-white selection:bg-purple-500/30 selection:text-purple-200">
+    <div className="fixed bottom-5 right-5 z-[55]">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="chat-panel"
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 12, scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 380, damping: 28 }}
+            className="mb-3 w-[340px] overflow-hidden rounded-2xl border border-white/10 bg-black/55 shadow-[0_20px_60px_rgba(0,0,0,0.6)] backdrop-blur-xl"
+          >
+            <div className="flex items-center justify-between border-b border-white/10 bg-black/40 px-4 py-3">
+              <div className="flex items-center gap-2">
+                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-white/10">
+                  <img
+                    src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
+                    alt="Agente"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="leading-tight">
+                  <p className="text-sm font-semibold text-white">Asistente</p>
+                  <p className="text-[11px] text-gray-400">Chat en beta (conexión a webhook luego)</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
+                aria-label="Cerrar chat"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="max-h-[320px] space-y-3 overflow-y-auto px-4 py-4">
+              {messages.map((m) => (
+                <div key={m.id} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+                  <div
+                    className={
+                      m.role === "user"
+                        ? "max-w-[85%] rounded-2xl rounded-br-md bg-gradient-to-r from-purple-600/80 to-cyan-600/70 px-3 py-2 text-[13px] text-white"
+                        : "max-w-[85%] rounded-2xl rounded-bl-md border border-white/10 bg-black/45 px-3 py-2 text-[13px] text-gray-200"
+                    }
+                  >
+                    {m.text}
+                  </div>
+                </div>
+              ))}
+              <div ref={endRef} />
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendMessage(input);
+              }}
+              className="flex items-center gap-2 border-t border-white/10 bg-black/35 px-3 py-3"
+            >
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Escribe tu mensaje..."
+                className="h-10 flex-1 rounded-xl border border-white/10 bg-black/40 px-3 text-[13px] text-white placeholder:text-gray-500 outline-none focus:border-cyan-400/50"
+              />
+              <button
+                type="submit"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/80 transition-colors hover:bg-white/10"
+                aria-label="Enviar"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 420, damping: 24 }}
+        className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-purple-600/90 to-cyan-600/80 text-white shadow-[0_22px_60px_rgba(0,0,0,0.65)]"
+        aria-label={open ? "Cerrar chat" : "Abrir chat"}
+      >
+        <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500/55 via-cyan-500/45 to-purple-500/55 opacity-80 blur" />
+        <div className="relative flex h-full w-full overflow-hidden rounded-2xl items-center justify-center">
+          {open ? (
+            <X className="h-8 w-8" />
+          ) : (
+            <img
+              src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
+              alt="Agente Avatar"
+              className="h-full w-full object-cover"
+            />
+          )}
+        </div>
+
+        <span className="pointer-events-none z-10 absolute -top-2 right-1 rounded-full border border-white/10 bg-black/60 px-2 py-0.5 text-[12px] font-semibold text-white/90 backdrop-blur">
+          Agente
+        </span>
+      </motion.button>
+    </div>
+  );
+};
+
+const Dashboard = () => {
+  const [progressKey, setProgressKey] = useState(0);
+
+  const triggerProgress = () => {
+    setProgressKey((k) => k + 1);
+  };
+
+  const handleNav = (id: string) => {
+    triggerProgress();
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-[#050507] text-white selection:bg-purple-500/30 selection:text-purple-200">
       <style
         dangerouslySetInnerHTML={{
           __html: `
-        @keyframes glitch-anim {
-          0%   { clip-path: inset(10% 0 80% 0); transform: translate(-2px, 2px); }
-          20%  { clip-path: inset(80% 0 10% 0); transform: translate(2px, -2px); }
-          40%  { clip-path: inset(40% 0 40% 0); transform: translate(2px, 2px); }
-          60%  { clip-path: inset(20% 0 60% 0); transform: translate(-2px, -2px); }
-          80%  { clip-path: inset(60% 0 20% 0); transform: translate(2px, 2px); }
-          100% { clip-path: inset(10% 0 80% 0); transform: translate(-2px, -2px); }
-        }
-        .glitch-text { position: relative; }
-        .glitch-text::before, .glitch-text::after {
-          content: attr(data-text);
-          position: absolute; top: 0; left: 0;
-          width: 100%; height: 100%;
-          background: #0F172A; opacity: 0;
-        }
-        .glitch-text:hover::before {
-          left: 2px; text-shadow: -2px 0 red;
-          animation: glitch-anim 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
-          opacity: 0.8; z-index: -1;
-        }
-        .glitch-text:hover::after {
-          left: -2px; text-shadow: -2px 0 blue;
-          animation: glitch-anim 0.3s cubic-bezier(.25,.46,.45,.94) reverse both infinite;
-          opacity: 0.8; z-index: -2;
-        }
         .shimmer {
           background: linear-gradient(125deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 70%);
           background-size: 200% 200%;
@@ -880,23 +1255,77 @@ const Dashboard = () => {
           0%   { background-position: -100% -100%; }
           100% { background-position: 200% 200%; }
         }
+        .noise {
+          position: fixed;
+          top: 0; left: 0; width: 100vw; height: 100vh;
+          pointer-events: none;
+          z-index: 50;
+          opacity: 0.04;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
       `,
         }}
       />
+      <div className="noise" />
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={progressKey}
+          className="fixed left-0 top-0 z-[60] h-[2px] w-full origin-left bg-gradient-to-r from-purple-500 via-cyan-400 to-purple-500"
+          initial={{ scaleX: 0, opacity: 0.9 }}
+          animate={{ scaleX: 1, opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+        />
+      </AnimatePresence>
+
+      <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/35 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-6xl items-center px-4">
+          <button type="button" onClick={() => handleNav("inicio")} className="shrink-0 text-left">
+            <span className="bg-gradient-to-r from-purple-400 via-fuchsia-300 to-white bg-clip-text text-lg font-extrabold tracking-tight text-transparent">
+              Ramiz.Componte
+            </span>
+          </button>
+
+          <nav className="mx-auto hidden items-center gap-2 rounded-full border border-white/10 bg-black/25 px-2 py-1.5 text-sm text-white/70 md:flex">
+            {[
+              { label: "Inicio", id: "inicio" },
+              { label: "Lo que ofrecemos", id: "sistemas" },
+              { label: "Casos reales", id: "casos" },
+              { label: "Cómo funciona", id: "como-funciona" },
+              { label: "Contacto", id: "contacto" },
+            ].map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => handleNav(item.id)}
+                className="group relative rounded-full px-3 py-1.5 transition-colors hover:bg-white/5 hover:text-white"
+              >
+                {item.label}
+                <span className="pointer-events-none absolute inset-x-3 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-cyan-400/0 to-transparent transition-all duration-300 group-hover:via-cyan-400/60" />
+              </button>
+            ))}
+          </nav>
+
+          <div className="w-[140px] shrink-0" />
+        </div>
+      </header>
+
+      <div className="pt-16">
 
       <ParticleCursor />
-      <HeroSection />
+      <HeroSection triggerProgress={triggerProgress} />
 
       <div className="relative">
         <div className="absolute top-0 h-px w-full bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
-        <SuccessCases />
+        <SuccessCases triggerProgress={triggerProgress} />
       </div>
 
-      <ServicesSection />
+      <ServicesSection triggerProgress={triggerProgress} />
 
       <div className="relative">
         <div className="absolute top-0 h-px w-full bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
-        <MultiStepForm />
+        <MultiStepForm triggerProgress={triggerProgress} />
       </div>
 
       <div className="relative">
@@ -904,23 +1333,34 @@ const Dashboard = () => {
         <TradingCard />
       </div>
 
-      <footer className="border-t border-slate-800 bg-slate-950 py-12 text-center">
+      <footer id="contacto" className="border-t border-slate-800 bg-slate-950 py-12 text-center">
         <div className="mx-auto flex max-w-4xl flex-col items-center justify-center space-y-6 px-4">
           <div className="flex space-x-6">
-            <a
-              href="https://instagram.com/Ramiz.Componte"
+            <motion.a
+              href="https://instagram.com/ramiz.componte"
               className="text-gray-500 transition-colors hover:text-pink-400"
+              whileHover={{ scale: 1.12, rotate: -2 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 22 }}
             >
               <Instagram className="h-6 w-6" />
-            </a>
-            <a href="#" className="text-gray-500 transition-colors hover:text-cyan-400">
-              <Linkedin className="h-6 w-6" />
-            </a>
+            </motion.a>
+            <motion.a
+              href="https://www.tiktok.com/@ramiz.componte"
+              className="text-gray-500 transition-colors hover:text-cyan-400"
+              whileHover={{ scale: 1.12, rotate: 2 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 22 }}
+            >
+              <TikTokIcon className="h-6 w-6" />
+            </motion.a>
           </div>
-          <p className="text-sm font-medium text-gray-400">Construido con IA, sin pedir permiso.</p>
           <p className="text-xs text-gray-600">© {new Date().getFullYear()} @Ramiz.Componte. Todos los derechos reservados.</p>
         </div>
       </footer>
+      </div>
+
+      <ChatWidget />
     </div>
   );
 };
