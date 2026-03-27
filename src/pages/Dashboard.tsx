@@ -250,7 +250,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
 
         {/* HERO CONVERSATIONS */}
         <motion.div variants={fadeInUp} className="mt-16 sm:mt-24 mx-auto w-full max-w-6xl" style={{ perspective: "1000px" }}>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             {[
               {
                 id: "restaurant",
