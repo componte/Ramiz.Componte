@@ -36,6 +36,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+const AGENT_AVATAR_URL =
+  "https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png";
+
+const CAL_IFRAME_SRC = "https://cal.com/componte-dryjsc/agenda-ramiz";
+
 const staggerContainer = {
   hidden: { opacity: 0 },
   show: {
@@ -208,7 +213,7 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
         </motion.h1>
 
         <motion.p variants={fadeInUp} className="mb-10 mx-auto max-w-2xl text-xl font-light leading-relaxed text-gray-400 md:text-2xl drop-shadow-xl">
-          Diseño e implemento sistemas que automatizan procesos, estructuran información y permiten que tu negocio funcione con menos fricción.
+          Diseño e implemento sistemas que convierten interacciones en resultados reales, eliminando la fricción operativa de tu equipo.
         </motion.p>
 
         <motion.div variants={fadeInUp} className="mb-14 h-8 text-lg font-medium text-gray-500 md:text-xl">
@@ -517,10 +522,10 @@ const services = [
   {
     id: "web",
     icon: Code,
-    title: "Sitio Web con Lógica",
+    title: "Interfaces con Propósito",
     description:
-      "No solo diseño bonito — páginas que hacen cosas. Formularios que conectan, botones que disparan flujos, y datos que se muestran en tiempo real.",
-    features: ["Formularios conectados a tu flujo", "Animaciones e interactividad", "Integrado con tus herramientas", "Mobile-first, carga rápida"],
+      "Formularios que convierten y conectan solos. Una interfaz clara que guía al usuario y deja todo listo para operar sin fricción.",
+    features: ["Formularios que convierten", "Animaciones e interactividad", "Integrado con tus herramientas", "Mobile-first, carga rápida"],
     color: "cyan",
   },
   {
@@ -568,11 +573,40 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
           const isAccent = index === 0;
           return (
             <motion.div key={s.id} variants={fadeScale} className="border-r border-b border-gray-800 bg-[#050507] group relative flex h-full flex-col overflow-hidden transition-all hover:bg-[rgba(255,255,255,0.02)]">
+              <motion.div
+                className="pointer-events-none absolute inset-0 z-[1]"
+                initial={{ opacity: 1 }}
+                whileInView={{ opacity: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.6, ease: "easeOut", delay: 0.25 + index * 0.12 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.06] via-white/[0.02] to-transparent" />
+                <div className="absolute inset-0 shimmer opacity-20" />
+                <div className="absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <div className="absolute inset-0 p-8">
+                  <div className="flex items-start justify-between">
+                    <div className="h-14 w-14 rounded-xl border border-white/10 bg-white/5" />
+                    <div className="h-6 w-16 rounded-full border border-white/10 bg-black/20" />
+                  </div>
+                  <div className="mt-8 space-y-3">
+                    <div className="h-5 w-3/4 rounded-md bg-white/5" />
+                    <div className="h-3 w-full rounded-md bg-white/5" />
+                    <div className="h-3 w-11/12 rounded-md bg-white/5" />
+                    <div className="h-3 w-9/12 rounded-md bg-white/5" />
+                  </div>
+                  <div className="mt-10 space-y-3">
+                    <div className="h-3 w-10/12 rounded-md bg-white/5" />
+                    <div className="h-3 w-9/12 rounded-md bg-white/5" />
+                    <div className="h-3 w-8/12 rounded-md bg-white/5" />
+                  </div>
+                </div>
+              </motion.div>
               <div className="pointer-events-none absolute inset-0 opacity-45 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-70">
                 <div className="absolute -inset-px bg-gradient-to-br from-purple-500/12 via-cyan-500/10 to-transparent" />
                 <div className="absolute inset-0 shimmer opacity-15" />
               </div>
-              <div className="p-8">
+              <div className="relative z-[2] p-8">
                 <div className="flex justify-between items-start">
                   <div className={`mb-6 flex h-14 w-14 items-center justify-center border ${isAccent ? 'border-purple-500 bg-purple-500/10 text-purple-400' : 'border-gray-700 bg-white/5 text-gray-400'}`}>
                     <Icon className="h-6 w-6" />
@@ -599,7 +633,7 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
                 </ul>
               </div>
               
-              <div className="mt-auto px-8 pb-8">
+              <div className="relative z-[2] mt-auto px-8 pb-8">
                 <Button
                  variant="ghost"
                  disabled={s.id === "reports"}
@@ -628,24 +662,34 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
   const webhookUrl =
     "https://n8n-n8n.3rtzuv.easypanel.host/webhook-test/01ce5e83-7f9f-4b2b-af6d-2d386fea7adf";
 
-  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
+  type Segment = "Business" | "Agency" | "Student" | "";
+  type BusinessVolume = "1-10" | "11-30" | "31-80" | "80+" | "";
+  type BusinessBudget = "300-500" | "500-1000" | "+1000" | "";
+
+  const [segment, setSegment] = useState<Segment>("");
+  const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState<null | "qualified" | "unqualified">(null);
-  const [waitlistSubmitting, setWaitlistSubmitting] = useState(false);
-  const [waitlistSent, setWaitlistSent] = useState(false);
 
-  const [formData, setFormData] = useState({
-    persona: "" as "dueno" | "agencia" | "estudiante" | "",
-    volume: "" as "<500" | "500-1500" | "+1500" | "",
-    budget: "" as "<350" | "+350" | "+700" | "+1500" | "",
+  const [business, setBusiness] = useState({
+    pain: "",
+    volume: "" as BusinessVolume,
+    hasWaba: "" as "si" | "no" | "",
+    budget: "" as BusinessBudget,
     name: "",
     email: "",
   });
 
-  const [waitlistData, setWaitlistData] = useState({
-    useCase: "" as "negocio" | "trabajo" | "curiosidad" | "",
-    pricing: "" as "comunidad-mensual" | "curso-unico" | "mentoria" | "",
+  const [agency, setAgency] = useState({
+    scale: "",
+    objective: "" as "onboarding" | "reportes" | "atencion" | "",
+    tools: "" as "si" | "no" | "",
+    investment: "",
+    name: "",
+    email: "",
   });
+
+  const [student, setStudent] = useState({ name: "", email: "" });
 
   const createConfetti = () => {
     const end = Date.now() + 2 * 1000;
@@ -676,33 +720,63 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
     })();
   };
 
-  const isQualified = (data: typeof formData) => {
-    if (data.persona === "estudiante") return false;
-    if (data.budget === "<350") return false;
-    if (data.volume === "<500") return false;
-    return true;
+  const score = () => {
+    if (segment === "Student") return 0;
+    if (segment === "Business") {
+      const budgetPoints: Record<BusinessBudget, number> = { "": 0, "300-500": 1, "500-1000": 2, "+1000": 3 };
+      const volumePoints: Record<BusinessVolume, number> = { "": 0, "1-10": 0, "11-30": 1, "31-80": 2, "80+": 3 };
+      const wabaPoints = business.hasWaba === "si" ? 1 : 0;
+      return budgetPoints[business.budget] + volumePoints[business.volume] + wabaPoints;
+    }
+    const objectivePoints: Record<typeof agency.objective, number> = { "": 0, onboarding: 2, reportes: 2, atencion: 3 };
+    const toolsPoints = agency.tools === "si" ? 2 : 1;
+    const scalePoints = agency.scale.trim().length >= 12 ? 2 : 1;
+    const investmentPoints = agency.investment.trim().length > 0 ? 1 : 0;
+    return objectivePoints[agency.objective] + toolsPoints + scalePoints + investmentPoints;
+  };
+
+  const isQualified = () => segment === "Business" && (business.budget === "500-1000" || business.budget === "+1000");
+
+  const resetAll = () => {
+    setSegment("");
+    setStep(0);
+    setSubmitted(null);
+    setBusiness({ pain: "", volume: "", hasWaba: "", budget: "", name: "", email: "" });
+    setAgency({ scale: "", objective: "", tools: "", investment: "", name: "", email: "" });
+    setStudent({ name: "", email: "" });
+  };
+
+  const submit = async () => {
+    const payloadBase = {
+      tipo: segment === "Student" ? "waitlist" : "diagnostico-calificador",
+      segment,
+      score: score(),
+      qualified: isQualified(),
+      page: window.location.href,
+      createdAt: new Date().toISOString(),
+    };
+
+    const payload =
+      segment === "Business"
+        ? { ...payloadBase, ...business, volumePerDay: business.volume, investmentEstimated: business.budget }
+        : segment === "Agency"
+          ? { ...payloadBase, ...agency, investmentEstimated: agency.investment }
+          : { ...payloadBase, ...student };
+
+    const res = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Webhook request failed");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setWaitlistSent(false);
     try {
-      const res = await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tipo: "diagnostico-calificador",
-          ...formData,
-          qualified: isQualified(formData),
-          page: window.location.href,
-          createdAt: new Date().toISOString(),
-        }),
-      });
-      if (!res.ok) throw new Error("Webhook request failed");
-
-      const qualified = isQualified(formData) ? "qualified" : "unqualified";
-      setSubmitted(qualified);
+      await submit();
+      setSubmitted(isQualified() ? "qualified" : "unqualified");
       createConfetti();
     } catch {
       setSubmitted(null);
@@ -711,29 +785,8 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
     }
   };
 
-  const submitWaitlist = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setWaitlistSubmitting(true);
-    try {
-      const res = await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tipo: "waitlist",
-          ...formData,
-          ...waitlistData,
-          page: window.location.href,
-          createdAt: new Date().toISOString(),
-        }),
-      });
-      if (!res.ok) throw new Error("Webhook request failed");
-      setWaitlistSent(true);
-    } catch {
-      setWaitlistSent(false);
-    } finally {
-      setWaitlistSubmitting(false);
-    }
-  };
+  const progressCount = segment === "Business" ? 5 : segment === "Agency" ? 4 : 2;
+  const progressStep = Math.max(0, Math.min(step, progressCount - 1));
 
   return (
     <section id="como-funciona" className="relative z-10 mx-auto max-w-4xl px-4 py-20">
@@ -746,27 +799,25 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
         className="border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur-xl md:p-12 transition-all relative overflow-hidden"
       >
         <div className="mb-14 border-b border-gray-800 pb-8 text-center">
-          <h2 className="mb-2 text-4xl font-black md:text-5xl">
-            Iniciemos tu Diagnóstico
-          </h2>
-          <p className="text-gray-400">
-            Completa este breve formulario para clasificar tu caso y darte el siguiente paso.
-          </p>
+          <h2 className="mb-2 text-4xl font-black md:text-5xl">Diagnóstico RAMIZ</h2>
+          <p className="text-gray-400">Responde esto y te digo el siguiente paso exacto.</p>
         </div>
 
         <div className="mb-10 flex items-center justify-center space-x-2">
-          {[0, 1, 2, 3].map((num) => (
-            <div key={num} className="flex items-center">
+          {Array.from({ length: progressCount }).map((_, idx) => (
+            <div key={idx} className="flex items-center">
               <div
                 className={`flex h-10 w-10 items-center justify-center border text-xs ${
-                  step >= num
+                  idx <= progressStep
                     ? "border-purple-500 bg-purple-500/10 text-purple-400 font-bold"
                     : "border-white/10 bg-black/20 text-gray-600"
                 } transition-colors`}
               >
-                {step > num ? <CheckCircle2 className="h-5 w-5" /> : num + 1}
+                {idx < progressStep ? <CheckCircle2 className="h-5 w-5" /> : idx + 1}
               </div>
-              {num < 3 && <div className={`mx-2 h-px w-8 ${step > num ? "bg-purple-500" : "bg-white/10"}`} />}
+              {idx < progressCount - 1 && (
+                <div className={`mx-2 h-px w-8 ${idx < progressStep ? "bg-purple-500" : "bg-white/10"}`} />
+              )}
             </div>
           ))}
         </div>
@@ -785,310 +836,325 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                     <div className="mb-6 flex h-24 w-24 items-center justify-center border border-cyan-500/30 bg-cyan-500/10 text-cyan-300">
                       <CheckCircle2 className="h-10 w-10" />
                     </div>
-                    <h3 className="mb-2 text-3xl font-black">Felicidades.</h3>
-                    <p className="max-w-xl text-gray-400">
-                      Tu negocio está listo para escalar. Selecciona una hora para tu Sesión Estratégica Gratuita de 15 min.
-                    </p>
+                    <h3 className="mb-2 text-3xl font-black">Perfecto.</h3>
+                    <p className="max-w-xl text-gray-400">Agenda tu llamada y lo aterrizamos con claridad.</p>
                     <div className="mt-8 w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30">
-                      <iframe
-                        title="Agenda Ramiz"
-                        src="https://cal.com/componte-dryjsc/agenda-ramiz"
-                        className="h-[720px] w-full"
-                        loading="lazy"
-                      />
+                      <iframe title="Agenda Ramiz" src={CAL_IFRAME_SRC} className="h-[720px] w-full" loading="lazy" />
                     </div>
                   </>
                 ) : (
                   <>
                     <div className="mb-6 flex h-24 w-24 items-center justify-center border border-purple-500/30 bg-purple-500/10 text-purple-300">
-                      <GraduationCap className="h-10 w-10" />
+                      <Check className="h-10 w-10" />
                     </div>
-                    <h3 className="mb-2 text-3xl font-black">Gracias.</h3>
-                    <p className="max-w-xl text-gray-400">
-                      Para tu nivel actual, te sugiero unirte a la lista de espera para mi curso/comunidad.
-                      Te aviso primero cuando abramos acceso exclusivo.
-                    </p>
-
-                    <form onSubmit={submitWaitlist} className="mt-10 w-full max-w-xl space-y-5 text-left">
-                      <div>
-                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
-                          ¿Para qué quieres aprender esto?
-                        </label>
-                        <div className="grid gap-3 md:grid-cols-3">
-                          {[
-                            { id: "negocio", label: "Aplicarlo en mi negocio" },
-                            { id: "trabajo", label: "Trabajar de esto" },
-                            { id: "curiosidad", label: "Curiosidad / explorar" },
-                          ].map((o) => (
-                            <button
-                              key={o.id}
-                              type="button"
-                              onClick={() => setWaitlistData((p) => ({ ...p, useCase: o.id as any }))}
-                              className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-colors ${
-                                waitlistData.useCase === o.id
-                                  ? "border-purple-500/50 bg-purple-500/10 text-white"
-                                  : "border-white/10 bg-black/20 text-white/80 hover:bg-white/5"
-                              }`}
-                            >
-                              {o.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
-                          ¿Qué tipo de inversión te cuadra más?
-                        </label>
-                        <div className="grid gap-3 md:grid-cols-3">
-                          {[
-                            { id: "comunidad-mensual", label: "Comunidad mensual ($40–$80)" },
-                            { id: "curso-unico", label: "Curso único ($300–$600)" },
-                            { id: "mentoria", label: "Mentoría / acompañamiento" },
-                          ].map((o) => (
-                            <button
-                              key={o.id}
-                              type="button"
-                              onClick={() => setWaitlistData((p) => ({ ...p, pricing: o.id as any }))}
-                              className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-colors ${
-                                waitlistData.pricing === o.id
-                                  ? "border-cyan-500/50 bg-cyan-500/10 text-white"
-                                  : "border-white/10 bg-black/20 text-white/80 hover:bg-white/5"
-                              }`}
-                            >
-                              {o.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-5">
-                        <p className="text-xs text-gray-500">
-                          {waitlistSent ? "Listo: te agregué a la lista de espera." : "Te escribiré cuando abramos."}
-                        </p>
-                        <Button
-                          type="submit"
-                          disabled={
-                            waitlistSubmitting ||
-                            waitlistSent ||
-                            !waitlistData.useCase ||
-                            !waitlistData.pricing
-                          }
-                          className="rounded-xl bg-purple-600 px-5 hover:bg-purple-500"
-                        >
-                          {waitlistSubmitting ? "Enviando..." : waitlistSent ? "Enviado" : "Unirme"}
-                        </Button>
-                      </div>
-                    </form>
+                    <h3 className="mb-2 text-3xl font-black">Listo.</h3>
+                    <p className="max-w-xl text-gray-400">Ya recibí tu info. Mientras tanto, aquí me encuentras:</p>
+                    <div className="mt-8 flex items-center justify-center gap-4">
+                      <a
+                        href="https://instagram.com/ramiz.componte"
+                        className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white/90 hover:bg-white/5"
+                      >
+                        <Instagram className="h-4 w-4" /> Instagram
+                      </a>
+                      <a
+                        href="https://www.tiktok.com/@ramiz.componte"
+                        className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white/90 hover:bg-white/5"
+                      >
+                        <TikTokIcon className="h-4 w-4" /> TikTok
+                      </a>
+                    </div>
                   </>
                 )}
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={resetAll}
+                  className="mt-10 rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
+                >
+                  Enviar otro
+                </Button>
               </motion.div>
             ) : step === 0 ? (
-              <motion.div
-                key="pick"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-8"
-              >
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold tracking-tight text-white">¿Quién eres?</h3>
-                  <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500">
-                    Elige una opción
-                  </p>
-                </div>
-
+              <motion.div key="pick" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <h3 className="mb-6 text-2xl font-bold tracking-tight text-white">¿Cuál es tu perfil actual?</h3>
                 <div className="grid gap-4 md:grid-cols-3">
                   {[
-                    { id: "dueno", label: "Dueño de Negocio", icon: ShoppingCart },
-                    { id: "agencia", label: "Freelancer / Agencia", icon: Globe },
-                    { id: "estudiante", label: "Estudiante / Curioso", icon: GraduationCap },
+                    { id: "Business", label: "Dueño de Negocio", icon: Globe, desc: "Quiero ahorrar tiempo y vender más" },
+                    { id: "Agency", label: "Freelancer / Agencia", icon: User, desc: "Quiero escalar resultados sin caos" },
+                    { id: "Student", label: "Estudiante / Curioso", icon: GraduationCap, desc: "Quiero aprender cómo se construye" },
                   ].map((p) => {
-                    const Icon = p.icon;
-                    const active = formData.persona === p.id;
+                    const I = p.icon;
                     return (
                       <button
                         key={p.id}
                         type="button"
                         onClick={() => {
-                          setFormData((prev) => ({ ...prev, persona: p.id as any }));
+                          setSegment(p.id as Segment);
                           triggerProgress();
                           setStep(1);
                         }}
-                        className={`group rounded-2xl border p-6 text-left transition-all ${
-                          active
-                            ? "border-purple-500/50 bg-purple-500/10"
-                            : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
-                        }`}
+                        className="group rounded-2xl border border-white/10 bg-black/20 p-6 text-left transition-all hover:bg-white/[0.03]"
                       >
-                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/80">
-                          <Icon className="h-6 w-6" />
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center border border-white/10 bg-black/25 text-white/90">
+                          <I className="h-5 w-5" />
                         </div>
-                        <p className="text-base font-bold text-white">{p.label}</p>
-                        <p className="mt-2 text-xs font-light leading-relaxed text-gray-400">
-                          {p.id === "dueno"
-                            ? "Quiero automatizar y escalar operaciones."
-                            : p.id === "agencia"
-                              ? "Quiero implementar sistemas para clientes."
-                              : "Quiero aprender y construirlo por mi cuenta."}
-                        </p>
+                        <p className="text-sm font-bold text-white">{p.label}</p>
+                        <p className="mt-1 text-xs text-gray-400">{p.desc}</p>
+                        {p.id === "Business" && (
+                          <span className="mt-4 inline-flex items-center rounded-full border border-purple-500/30 bg-purple-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-purple-300">
+                            Prioridad Alpha
+                          </span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
-              </motion.div>
-            ) : step === 1 ? (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-white/10 pb-4">
-                  Volumen mensual de mensajes/consultas
-                </h3>
-                <div className="grid gap-4 md:grid-cols-3">
-                  {[
-                    { id: "<500", label: "< 500" },
-                    { id: "500-1500", label: "500 – 1500" },
-                    { id: "+1500", label: "+ 1500" },
-                  ].map((o) => (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() => {
-                        setFormData((prev) => ({ ...prev, volume: o.id as any }));
-                        triggerProgress();
-                        setStep(2);
-                      }}
-                      className={`rounded-2xl border px-6 py-5 text-left transition-all ${
-                        formData.volume === o.id
-                          ? "border-cyan-500/50 bg-cyan-500/10"
-                          : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
-                      }`}
-                    >
-                      <p className="text-sm font-bold text-white">{o.label}</p>
-                      <p className="mt-1 text-xs text-gray-400">Consultas / mes</p>
-                    </button>
-                  ))}
-                </div>
-                <div className="flex justify-between border-t border-gray-800 pt-6">
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setFormData((prev) => ({ ...prev, persona: "", volume: "" }));
-                      setStep(0);
-                    }}
-                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
-                  >
-                    Atrás
-                  </Button>
+                <div className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-4 text-sm text-white/80">
+                  ¿Quieres aprender a construir esto? <span className="text-purple-300 font-semibold">Únete a la lista de espera.</span>
                 </div>
               </motion.div>
-            ) : step === 2 ? (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-white/10 pb-4">
-                  Inversión estimada para el proyecto
-                </h3>
-                <div className="pb-2">
-                  <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
-                    Selecciona una opción
-                  </label>
-                  <select
-                    className="w-full rounded-xl border border-white/10 bg-black/25 px-5 py-4 text-sm text-white focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                    value={formData.budget}
-                    onChange={(e) => setFormData((p) => ({ ...p, budget: e.target.value as any }))}
-                  >
-                    <option value="">Selecciona…</option>
-                    <option value="<350">Menos de $350</option>
-                    <option value="+350">+$350</option>
-                    <option value="+700">+$700</option>
-                    <option value="+1500">+$1500</option>
-                  </select>
-                </div>
-                <div className="flex justify-between border-t border-gray-800 pt-6">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setStep(1)}
-                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
-                  >
-                    Atrás
-                  </Button>
-                  <Button
-                    disabled={!formData.budget}
-                    onClick={() => {
-                      triggerProgress();
-                      setStep(3);
-                    }}
-                    className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
-                  >
-                    Continuar <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-bold tracking-tight text-white mb-6 border-b border-gray-800 pb-4">Último paso</h3>
+            ) : segment === "Student" ? (
+              <motion.div key="student" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Lista de espera</h3>
+                <p className="text-gray-400">Nombre y email y ya.</p>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Tu Nombre</label>
-                    <Input
-                      placeholder="Identidad"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
-                      className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
-                    />
-                  </div>
-                  <div className="pb-6">
-                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
-                    <Input
-                      placeholder="tu@email.com"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
-                      className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
-                    />
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Nombre</label>
+                      <Input
+                        placeholder="Tu nombre"
+                        required
+                        value={student.name}
+                        onChange={(e) => setStudent((p) => ({ ...p, name: e.target.value }))}
+                        className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
+                      <Input
+                        placeholder="tu@email.com"
+                        type="email"
+                        required
+                        value={student.email}
+                        onChange={(e) => setStudent((p) => ({ ...p, email: e.target.value }))}
+                        className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                      />
+                    </div>
                   </div>
                   <div className="flex justify-between border-t border-gray-800 pt-6">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setStep(2)}
-                      className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
-                    >
+                    <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                       Atrás
                     </Button>
-                    <Button
-                      type="submit"
-                      disabled={loading || !formData.name || !formData.email}
-                      className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200"
-                    >
-                      {loading ? (
-                        "Enviando..."
-                      ) : (
-                        <>
-                          <span>Enviar</span> <Send className="ml-2 h-4 w-4" />
-                        </>
-                      )}
+                    <Button type="submit" disabled={loading || !student.name || !student.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
+                      {loading ? "Enviando..." : "Unirme"}
                     </Button>
                   </div>
                 </form>
               </motion.div>
+            ) : segment === "Business" ? (
+              step === 1 ? (
+                <motion.div key="b1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Punto de dolor</h3>
+                  <p className="text-gray-400">¿Qué proceso específico te quita más tiempo o te hace perder dinero hoy?</p>
+                  <Textarea
+                    value={business.pain}
+                    onChange={(e) => setBusiness((p) => ({ ...p, pain: e.target.value }))}
+                    placeholder="Ej: responder precios todo el día, agendar citas, seguimiento de pagos..."
+                    className="min-h-[140px] rounded-xl border-white/10 bg-black/25 text-white placeholder:text-gray-600 focus-visible:ring-purple-500"
+                  />
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
+                    <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                      Atrás
+                    </Button>
+                    <Button type="button" disabled={!business.pain.trim()} onClick={() => { triggerProgress(); setStep(2); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : step === 2 ? (
+                <motion.div key="b2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Volumen</h3>
+                  <p className="text-gray-400">¿Cuántos mensajes o clientes atiendes manualmente al día?</p>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {[
+                      { id: "1-10", label: "1 – 10" },
+                      { id: "11-30", label: "11 – 30" },
+                      { id: "31-80", label: "31 – 80" },
+                      { id: "80+", label: "80+" },
+                    ].map((o) => (
+                      <button
+                        key={o.id}
+                        type="button"
+                        onClick={() => setBusiness((p) => ({ ...p, volume: o.id as BusinessVolume }))}
+                        className={`rounded-2xl border px-6 py-5 text-left transition-all ${business.volume === o.id ? "border-cyan-500/50 bg-cyan-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}
+                      >
+                        <p className="text-sm font-bold text-white">{o.label}</p>
+                        <p className="mt-1 text-xs text-gray-400">Mensajes / día</p>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-2">
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Usas WhatsApp Business actualmente?</label>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {[
+                        { id: "si", label: "Sí" },
+                        { id: "no", label: "No" },
+                      ].map((o) => (
+                        <button
+                          key={o.id}
+                          type="button"
+                          onClick={() => setBusiness((p) => ({ ...p, hasWaba: o.id as any }))}
+                          className={`rounded-2xl border px-6 py-5 text-left transition-all ${business.hasWaba === o.id ? "border-purple-500/50 bg-purple-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}
+                        >
+                          <p className="text-sm font-bold text-white">{o.label}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
+                    <Button type="button" variant="ghost" onClick={() => setStep(1)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                      Atrás
+                    </Button>
+                    <Button type="button" disabled={!business.volume || !business.hasWaba} onClick={() => { triggerProgress(); setStep(3); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : step === 3 ? (
+                <motion.div key="b3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Inversión estimada</h3>
+                  <p className="text-gray-400">Elige un rango para aterrizar el plan.</p>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {[
+                      { id: "300-500", label: "$300 – $500" },
+                      { id: "500-1000", label: "$500 – $1000" },
+                      { id: "+1000", label: "+$1000" },
+                    ].map((o) => (
+                      <button
+                        key={o.id}
+                        type="button"
+                        onClick={() => setBusiness((p) => ({ ...p, budget: o.id as BusinessBudget }))}
+                        className={`rounded-2xl border px-6 py-5 text-left transition-all ${business.budget === o.id ? "border-cyan-500/50 bg-cyan-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}
+                      >
+                        <p className="text-sm font-bold text-white">{o.label}</p>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
+                    <Button type="button" variant="ghost" onClick={() => setStep(2)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                      Atrás
+                    </Button>
+                    <Button type="button" disabled={!business.budget} onClick={() => { triggerProgress(); setStep(4); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div key="b4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Contacto</h3>
+                  <p className="text-gray-400">Con esto ya puedo responderte con claridad.</p>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Tu Nombre</label>
+                        <Input placeholder="Nombre" required value={business.name} onChange={(e) => setBusiness((p) => ({ ...p, name: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                      </div>
+                      <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
+                        <Input placeholder="tu@email.com" type="email" required value={business.email} onChange={(e) => setBusiness((p) => ({ ...p, email: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                      </div>
+                    </div>
+                    <div className="flex justify-between border-t border-gray-800 pt-6">
+                      <Button type="button" variant="ghost" onClick={() => setStep(3)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                        Atrás
+                      </Button>
+                      <Button type="submit" disabled={loading || !business.name || !business.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
+                        {loading ? "Enviando..." : "Enviar"}
+                      </Button>
+                    </div>
+                  </form>
+                </motion.div>
+              )
+            ) : (
+              step === 1 ? (
+                <motion.div key="a1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Escala</h3>
+                  <p className="text-gray-400">¿Cuántos clientes manejas y qué servicios ofreces?</p>
+                  <Textarea value={agency.scale} onChange={(e) => setAgency((p) => ({ ...p, scale: e.target.value }))} placeholder="Ej: 8 clientes, ads + landing + contenido..." className="min-h-[140px] rounded-xl border-white/10 bg-black/25 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
+                    <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                      Atrás
+                    </Button>
+                    <Button type="button" disabled={!agency.scale.trim()} onClick={() => { triggerProgress(); setStep(2); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : step === 2 ? (
+                <motion.div key="a2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Objetivo</h3>
+                  <p className="text-gray-400">¿Qué buscas automatizar?</p>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {[
+                      { id: "onboarding", label: "Onboarding" },
+                      { id: "reportes", label: "Reportes" },
+                      { id: "atencion", label: "Atención" },
+                    ].map((o) => (
+                      <button key={o.id} type="button" onClick={() => setAgency((p) => ({ ...p, objective: o.id as any }))} className={`rounded-2xl border px-6 py-5 text-left transition-all ${agency.objective === o.id ? "border-cyan-500/50 bg-cyan-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}>
+                        <p className="text-sm font-bold text-white">{o.label}</p>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-2">
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">¿Ya trabajas con n8n, Make o similares?</label>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {[
+                        { id: "si", label: "Sí" },
+                        { id: "no", label: "No" },
+                      ].map((o) => (
+                        <button key={o.id} type="button" onClick={() => setAgency((p) => ({ ...p, tools: o.id as any }))} className={`rounded-2xl border px-6 py-5 text-left transition-all ${agency.tools === o.id ? "border-purple-500/50 bg-purple-500/10" : "border-white/10 bg-black/20 hover:bg-white/[0.03]"}`}>
+                          <p className="text-sm font-bold text-white">{o.label}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex justify-between border-t border-gray-800 pt-6">
+                    <Button type="button" variant="ghost" onClick={() => setStep(1)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                      Atrás
+                    </Button>
+                    <Button type="button" disabled={!agency.objective || !agency.tools} onClick={() => { triggerProgress(); setStep(3); }} className="rounded-none bg-purple-600 px-8 hover:bg-purple-500 text-xs font-bold uppercase tracking-widest disabled:opacity-50">
+                      Continuar <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div key="a3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
+                  <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Contacto</h3>
+                  <p className="text-gray-400">Inversión estimada por proyecto (rango abierto).</p>
+                  <Input value={agency.investment} onChange={(e) => setAgency((p) => ({ ...p, investment: e.target.value }))} placeholder="Ej: 800 – 1500, 2k+, depende del alcance..." className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Tu Nombre</label>
+                        <Input placeholder="Nombre" required value={agency.name} onChange={(e) => setAgency((p) => ({ ...p, name: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                      </div>
+                      <div>
+                        <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
+                        <Input placeholder="tu@email.com" type="email" required value={agency.email} onChange={(e) => setAgency((p) => ({ ...p, email: e.target.value }))} className="rounded-xl border-white/10 bg-black/25 py-6 text-white placeholder:text-gray-600 focus-visible:ring-purple-500" />
+                      </div>
+                    </div>
+                    <div className="flex justify-between border-t border-gray-800 pt-6">
+                      <Button type="button" variant="ghost" onClick={() => setStep(2)} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
+                        Atrás
+                      </Button>
+                      <Button type="submit" disabled={loading || !agency.name || !agency.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
+                        {loading ? "Enviando..." : "Enviar"}
+                      </Button>
+                    </div>
+                  </form>
+                </motion.div>
+              )
             )}
           </AnimatePresence>
         </div>
@@ -1169,48 +1235,221 @@ type ChatMessage = {
 };
 
 const ChatWidget = () => {
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: "a1",
+      role: "assistant",
+      text: "¿Te digo la verdad? En 60 segundos el Diagnóstico RAMIZ me da el contexto y yo te digo el siguiente paso exacto. Si quieres, arranca por ahí.",
+    },
+  ]);
+
+  const scrollToFunnel = () => document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" });
+
+  const getAssistantReply = (text: string) => {
+    const t = text.toLowerCase();
+    if (t.includes("precio") || t.includes("costo") || t.includes("cuanto") || t.includes("cuánto")) {
+      return "Depende del alcance, pero si me dices tu volumen y tu objetivo, te doy un rango realista. Si quieres, llena el Diagnóstico y te lo aterrizo.";
+    }
+    if (t.includes("whatsapp") || t.includes("waba")) {
+      return "Sí, se puede trabajar con WhatsApp Business. Lo importante es definir qué preguntas responde, cómo registra datos y cuándo pasa a un humano.";
+    }
+    if (t.includes("agente") || t.includes("ia") || t.includes("chat")) {
+      return "Un agente puede atender, calificar y derivar. Lo bonito es que no es solo conversar: también captura datos y ejecuta acciones (sin molestar al equipo).";
+    }
+    if (text.trim().length > 180) {
+      return "Buen contexto. Para responderte fino, lo mejor es que lo pases por el Diagnóstico RAMIZ: así lo convierto en un plan con pasos claros.";
+    }
+    return "Suena bien. ¿Eso hoy te quita tiempo, te hace perder ventas, o te genera errores?";
+  };
+
+  const sendMessage = () => {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    const userMsg: ChatMessage = { id: `u-${Date.now()}`, role: "user", text: trimmed };
+    const assistantMsg: ChatMessage = {
+      id: `a-${Date.now()}`,
+      role: "assistant",
+      text: getAssistantReply(trimmed),
+    };
+    setMessages((prev) => [...prev, userMsg, assistantMsg]);
+    setInput("");
+  };
+
   return (
     <div className="fixed bottom-5 right-5 z-[55]">
-      <div className="group relative">
-        <div className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2">
-          <div className="hidden rounded-2xl border border-white/10 bg-black/65 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.6)] opacity-0 translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 md:block">
-            Solicitar diagnóstico
+      <div className="relative">
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.98 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="absolute bottom-24 right-0 w-[340px] overflow-hidden rounded-2xl border border-white/10 bg-black/70 backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.75)]"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 overflow-hidden rounded-xl border border-white/10 bg-black/30">
+                    <img src={AGENT_AVATAR_URL} alt="Agente" className="h-full w-full object-cover" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-white">Agente</p>
+                    <p className="text-[10px] text-green-400 font-semibold tracking-widest uppercase">en línea</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg border border-white/10 bg-black/20 p-2 text-white/80 hover:bg-white/5"
+                  aria-label="Cerrar"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="max-h-[320px] space-y-3 overflow-auto px-4 py-4">
+                {messages.map((m) => (
+                  <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`max-w-[85%] rounded-2xl border px-3 py-2 text-sm leading-relaxed ${
+                        m.role === "user"
+                          ? "border-purple-500/30 bg-purple-500/10 text-white"
+                          : "border-white/10 bg-white/5 text-white/90"
+                      }`}
+                    >
+                      {m.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-white/10 p-3">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      scrollToFunnel();
+                    }}
+                    className="rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1.5 text-xs font-semibold text-purple-200 hover:bg-purple-500/15"
+                  >
+                    Empezar Diagnóstico
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const userMsg: ChatMessage = {
+                        id: `u-${Date.now()}`,
+                        role: "user",
+                        text: "¿Cuánto cuesta?",
+                      };
+                      const assistantMsg: ChatMessage = {
+                        id: `a-${Date.now()}`,
+                        role: "assistant",
+                        text: getAssistantReply("¿Cuánto cuesta?"),
+                      };
+                      setMessages((prev) => [...prev, userMsg, assistantMsg]);
+                    }}
+                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/80 hover:bg-white/10"
+                  >
+                    Ver rango
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
+                    placeholder="Escribe aquí..."
+                    className="h-11 w-full rounded-xl border border-white/10 bg-black/25 px-3 text-sm text-white placeholder:text-gray-500 focus:border-purple-500 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={sendMessage}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:bg-white/10"
+                    aria-label="Enviar"
+                  >
+                    <Send className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      scrollToFunnel();
+                    }}
+                    className="text-xs font-semibold text-purple-300 hover:text-purple-200"
+                  >
+                    Ir al Diagnóstico
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMessages([
+                        {
+                          id: "a1",
+                          role: "assistant",
+                          text: "¿Te digo la verdad? En 60 segundos el Diagnóstico RAMIZ me da el contexto y yo te digo el siguiente paso exacto. Si quieres, arranca por ahí.",
+                        },
+                      ]);
+                      setInput("");
+                    }}
+                    className="text-xs font-semibold text-white/60 hover:text-white/80"
+                  >
+                    Reiniciar
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="group relative">
+          <div className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2">
+            <div className="hidden rounded-2xl border border-white/10 bg-black/65 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.6)] opacity-0 translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 md:block">
+              Haz el Diagnóstico RAMIZ
+            </div>
+            <div className="md:hidden rounded-2xl border border-white/10 bg-black/55 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl">
+              Diagnóstico
+            </div>
           </div>
-          <div className="md:hidden rounded-2xl border border-white/10 bg-black/55 px-3 py-2 text-xs font-medium text-white/90 backdrop-blur-xl">
-            Diagnóstico
-          </div>
-        </div>
 
-        <motion.button
-          type="button"
-          onClick={() => document.getElementById("iniciar")?.scrollIntoView({ behavior: "smooth" })}
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 420, damping: 24 }}
-          className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-purple-600/90 to-cyan-600/80 text-white shadow-[0_22px_60px_rgba(0,0,0,0.65)]"
-          aria-label="Abrir diagnóstico"
-        >
-          <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500/60 via-cyan-500/50 to-purple-500/60 opacity-90 blur" />
-          <div className="pointer-events-none absolute -inset-3 rounded-[22px] bg-purple-500/20 blur-xl opacity-60 animate-pulse" />
-          <div className="pointer-events-none absolute -inset-2 rounded-[22px] border border-purple-400/30" />
+          <motion.button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 420, damping: 24 }}
+            className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-br from-purple-600/90 to-cyan-600/80 text-white shadow-[0_22px_60px_rgba(0,0,0,0.65)]"
+            aria-label="Abrir asistente"
+          >
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500/60 via-cyan-500/50 to-purple-500/60 opacity-90 blur" />
+            <div className="pointer-events-none absolute -inset-3 rounded-[22px] bg-purple-500/20 blur-xl opacity-60 animate-pulse" />
+            <div className="pointer-events-none absolute -inset-2 rounded-[22px] border border-purple-400/30" />
 
-          <div className="relative flex h-full w-full overflow-hidden rounded-2xl items-center justify-center">
-            <img
-              src="https://res.cloudinary.com/dziczqgzn/image/upload/ar_1:1,c_auto/Gemini_Generated_Image_faa4xffaa4xffaa4_righyw.png"
-              alt="Agente Avatar"
-              className="h-full w-full object-cover"
-            />
+            <div className="relative flex h-full w-full overflow-hidden rounded-2xl items-center justify-center">
+              <img src={AGENT_AVATAR_URL} alt="Agente Avatar" className="h-full w-full object-cover" />
 
-            <span className="absolute bottom-2 right-2 flex h-3 w-3">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-35" />
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-green-400 ring-2 ring-black/60" />
+              <span className="absolute bottom-2 right-2 flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-35" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-green-400 ring-2 ring-black/60" />
+              </span>
+            </div>
+
+            <span className="pointer-events-none z-10 absolute -top-2 right-1 rounded-full border border-white/10 bg-black/60 px-2 py-0.5 text-[12px] font-semibold text-white/90 backdrop-blur">
+              Agente
             </span>
-          </div>
-
-          <span className="pointer-events-none z-10 absolute -top-2 right-1 rounded-full border border-white/10 bg-black/60 px-2 py-0.5 text-[12px] font-semibold text-white/90 backdrop-blur">
-            Agente
-          </span>
-        </motion.button>
+          </motion.button>
+        </div>
       </div>
     </div>
   );
