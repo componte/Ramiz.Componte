@@ -240,44 +240,76 @@ const HeroSection = ({ triggerProgress }: { triggerProgress: () => void }) => {
           </Button>
         </motion.div>
 
-        {/* HERO WHATSAPP MOCKUP */}
-        <motion.div variants={fadeInUp} className="mt-16 sm:mt-24 mx-auto w-full max-w-sm sm:max-w-md" style={{ perspective: "1000px" }}>
-          <motion.div 
-            initial={{ rotateX: 10, rotateY: -10, opacity: 0 }}
-            animate={{ rotateX: 0, rotateY: 0, opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="relative rounded-xl border border-gray-800 bg-[#0a0a0c] p-4 sm:p-6 shadow-2xl flex flex-col gap-5 text-left transform-gpu"
-          >
-            <div className="flex items-center gap-3 border-b border-gray-800 pb-4">
-              <div className="h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-                <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-sm sm:text-base font-bold text-white tracking-wide">Vendedor Inteligente</p>
-                <p className="text-[10px] sm:text-xs text-green-500 font-semibold tracking-widest uppercase flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> en línea
-                </p>
-              </div>
-            </div>
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, x: 20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ delay: 1, duration: 0.5, type: "spring" }}
-              className="self-end rounded-2xl rounded-tr-none bg-purple-600/10 border border-purple-500/20 p-3 sm:p-4 max-w-[85%]"
-            >
-              <p className="text-sm sm:text-base text-gray-200 leading-relaxed font-light">Mano, ¿de casualidad tienes audífonos inalámbricos negros?</p>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, x: -20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ delay: 2.5, duration: 0.5, type: "spring" }}
-              className="self-start rounded-2xl rounded-tl-none bg-white/5 border border-gray-800 p-3 sm:p-4 max-w-[90%]"
-            >
-              <p className="text-sm sm:text-base text-gray-300 leading-relaxed font-light">¡Épale bro! Sí activo, nos quedan 3 orginales negros en <strong className="text-white">$25</strong>. ¿Te aparto uno de una vez o quieres que te pase fotos?</p>
-            </motion.div>
-          </motion.div>
+        {/* HERO CONVERSATIONS */}
+        <motion.div variants={fadeInUp} className="mt-16 sm:mt-24 mx-auto w-full max-w-6xl" style={{ perspective: "1000px" }}>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                id: "restaurant",
+                title: "Restaurante",
+                user: "Buenas tardes, ¿tienen disponibilidad para una mesa para 4 hoy a las 7:00 pm?",
+                assistant:
+                  "¡Claro! Hay disponibilidad. ¿Deseas reservar a nombre de quién y con algún requerimiento (niños/alergias)?",
+              },
+              {
+                id: "commerce",
+                title: "Comercio",
+                user: "Hola, quisiera conocer el estado de mi pedido #1842 y el tiempo estimado de entrega.",
+                assistant:
+                  "Con gusto. El pedido #1842 está en ruta de entrega. Tiempo estimado: 45–60 min. ¿Deseas recibir actualizaciones por WhatsApp?",
+              },
+              {
+                id: "colloquial",
+                title: "Retail",
+                user: "Mano, ¿de casualidad tienes audífonos inalámbricos negros?",
+                assistant:
+                  "¡Épale bro! Sí activo, nos quedan 3 orginales negros en $25. ¿Te aparto uno de una vez o quieres que te pase fotos?",
+              },
+            ].map((c, idx) => (
+              <motion.div
+                key={c.id}
+                initial={{ rotateX: 10, rotateY: -10, opacity: 0 }}
+                animate={{ rotateX: 0, rotateY: 0, opacity: 1 }}
+                transition={{ duration: 0.9, ease: "easeOut", delay: idx * 0.12 }}
+                className="relative rounded-xl border border-gray-800 bg-[#0a0a0c] p-4 shadow-2xl flex flex-col gap-4 text-left transform-gpu"
+              >
+                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 overflow-hidden rounded-full bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                      <Bot className="h-5 w-5 text-purple-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white tracking-wide">Vendedor Inteligente</p>
+                      <p className="text-[10px] text-green-500 font-semibold tracking-widest uppercase flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" /> en línea
+                      </p>
+                    </div>
+                  </div>
+                  <span className="rounded-full border border-white/10 bg-black/40 px-2 py-0.5 text-[10px] font-semibold text-white/70">
+                    {c.title}
+                  </span>
+                </div>
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98, x: 12 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  transition={{ delay: 0.35 + idx * 0.12, duration: 0.45, type: "spring" }}
+                  className="self-end rounded-2xl rounded-tr-none bg-purple-600/10 border border-purple-500/20 p-3 max-w-[90%]"
+                >
+                  <p className="text-sm text-gray-200 leading-relaxed font-light">{c.user}</p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98, x: -12 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  transition={{ delay: 0.9 + idx * 0.12, duration: 0.45, type: "spring" }}
+                  className="self-start rounded-2xl rounded-tl-none bg-white/5 border border-gray-800 p-3 max-w-[92%]"
+                >
+                  <p className="text-sm text-gray-300 leading-relaxed font-light">{c.assistant}</p>
+                </motion.div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </motion.div>
 
