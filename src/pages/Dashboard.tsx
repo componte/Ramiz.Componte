@@ -663,6 +663,8 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
   type BusinessBudget = "300-500" | "500-1000" | "+1000" | "";
   type AgencyBudget = "<500" | "500-1000" | "1000-2500" | "+2500" | "";
   type AgencyObjective = "onboarding" | "reportes" | "atencion" | "contenido";
+  type StudentGoal = "agencia" | "negocio" | "habilidad" | "curiosidad" | "";
+  type StudentTechLevel = "novato" | "intermedio" | "avanzado" | "";
 
   const [segment, setSegment] = useState<Segment>("");
   const [step, setStep] = useState(0);
@@ -689,7 +691,13 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
     email: "",
   });
 
-  const [student, setStudent] = useState({ name: "", phone: "", email: "" });
+  const [student, setStudent] = useState({
+    goal: "" as StudentGoal,
+    techLevel: "" as StudentTechLevel,
+    name: "",
+    phone: "",
+    email: "",
+  });
 
   const createConfetti = () => {
     const end = Date.now() + 2 * 1000;
@@ -744,7 +752,7 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
     setSubmitted(null);
     setBusiness({ volume: "", hasWaba: "", budget: "", pain: "", name: "", phone: "", email: "" });
     setAgency({ objectives: [], hasAutomation: "", budget: "", scale: "", name: "", phone: "", email: "" });
-    setStudent({ name: "", phone: "", email: "" });
+    setStudent({ goal: "", techLevel: "", name: "", phone: "", email: "" });
   };
 
   const submit = async () => {
@@ -935,11 +943,71 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
             ) : segment === "Student" ? (
               <motion.div key="student" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
                 <h3 className="text-2xl font-bold tracking-tight text-white mb-2">Lista de espera</h3>
-                <p className="text-gray-400">Nombre y email y ya.</p>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <p className="text-gray-400">Déjame 2 datos rápidos para ubicarte y te contacto.</p>
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit(e);
+                  }}
+                  className="space-y-6"
+                >
+                  <div>
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
+                      ¿Cuál es tu meta principal al aprender automatización?
+                    </label>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {[
+                        { id: "agencia", label: "Montar mi propia agencia" },
+                        { id: "negocio", label: "Automatizar mi negocio actual" },
+                        { id: "habilidad", label: "Aprender una nueva habilidad pro" },
+                        { id: "curiosidad", label: "Curiosidad técnica" },
+                      ].map((o) => (
+                        <button
+                          key={o.id}
+                          type="button"
+                          onClick={() => setStudent((p) => ({ ...p, goal: o.id as any }))}
+                          className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                            student.goal === o.id
+                              ? "border-purple-500/50 bg-purple-500/10"
+                              : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                          }`}
+                        >
+                          <p className="text-sm font-bold text-white">{o.label}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">
+                      ¿Cuál es tu nivel actual con herramientas de IA o No-Code?
+                    </label>
+                    <div className="grid gap-3 md:grid-cols-3">
+                      {[
+                        { id: "novato", label: "Novato (Desde cero)" },
+                        { id: "intermedio", label: "Intermedio (He usado ChatGPT/Zapier)" },
+                        { id: "avanzado", label: "Avanzado (Ya uso n8n o APIs)" },
+                      ].map((o) => (
+                        <button
+                          key={o.id}
+                          type="button"
+                          onClick={() => setStudent((p) => ({ ...p, techLevel: o.id as any }))}
+                          className={`rounded-2xl border px-6 py-5 text-left transition-all ${
+                            student.techLevel === o.id
+                              ? "border-cyan-500/50 bg-cyan-500/10"
+                              : "border-white/10 bg-black/20 hover:bg-white/[0.03]"
+                          }`}
+                        >
+                          <p className="text-sm font-bold text-white">{o.label}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
-                      <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Nombre</label>
+                      <label className="mb-3 block text-xs font-bold uppercase tracking-widest text-gray-500">Tu Nombre</label>
                       <Input
                         placeholder="Tu nombre"
                         required
@@ -970,11 +1038,16 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
                       />
                     </div>
                   </div>
+
                   <div className="flex justify-between border-t border-gray-800 pt-6">
                     <Button type="button" variant="ghost" onClick={resetAll} className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white">
                       Atrás
                     </Button>
-                    <Button type="submit" disabled={loading || !student.name || !student.phone || !student.email} className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200">
+                    <Button
+                      type="submit"
+                      disabled={loading || !student.goal || !student.techLevel || !student.name || !student.phone || !student.email}
+                      className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200"
+                    >
                       {loading ? "Enviando..." : "Unirme"}
                     </Button>
                   </div>
