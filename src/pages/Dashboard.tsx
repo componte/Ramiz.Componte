@@ -44,6 +44,8 @@ const AGENT_AVATAR_URL =
 
 const CAL_IFRAME_SRC = "https://cal.com/componte-dryjsc/agenda-ramiz";
 
+const CONSULT_CAL_URL = "https://www.google.com/url?sa=E&source=gmail&q=Cal.com";
+
 const staggerContainer = {
   hidden: { opacity: 0 },
   show: {
@@ -656,7 +658,7 @@ const ServicesSection = ({ triggerProgress }: { triggerProgress: () => void }) =
 
 const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => {
   const webhookUrl =
-    "https://n8n-n8n.3rtzuv.easypanel.host/webhook-test/01ce5e83-7f9f-4b2b-af6d-2d386fea7adf";
+    "https://n8n-n8n.3rtzuv.easypanel.host/webhook/01ce5e83-7f9f-4b2b-af6d-2d386fea7adf";
 
   type Segment = "Business" | "Agency" | "Student" | "";
   type BusinessVolume = "1-10" | "11-30" | "31-80" | "80+" | "";
@@ -669,7 +671,8 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
   const [segment, setSegment] = useState<Segment>("");
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState<null | "qualified" | "unqualified">(null);
+  const [diagnostico, setDiagnostico] = useState<string | null>(null);
+  const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
 
   const [business, setBusiness] = useState({
     volume: "" as BusinessVolume,
@@ -749,13 +752,28 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
   const resetAll = () => {
     setSegment("");
     setStep(0);
-    setSubmitted(null);
+    setDiagnostico(null);
     setBusiness({ volume: "", hasWaba: "", budget: "", pain: "", name: "", phone: "", email: "" });
     setAgency({ objectives: [], hasAutomation: "", budget: "", scale: "", name: "", phone: "", email: "" });
     setStudent({ goal: "", techLevel: "", name: "", phone: "", email: "" });
   };
 
-  const submit = async () => {
+  const loadingPhrases = [
+    "Ramiz AI está analizando tu arquitectura...",
+    "Evaluando métricas de volumen...",
+    "Consultando modelos de automatización...",
+    "Arquitectando solución personalizada...",
+  ];
+
+  useEffect(() => {
+    if (!loading || diagnostico) return;
+    const id = window.setInterval(() => {
+      setLoadingPhraseIndex((p) => (p + 1) % loadingPhrases.length);
+    }, 1400);
+    return () => window.clearInterval(id);
+  }, [loading, diagnostico, loadingPhrases.length]);
+
+  const submit = async (): Promise<{ diagnostico?: string } | null> => {
     const payloadBase = {
       tipo: segment === "Student" ? "waitlist" : "diagnostico-calificador",
       segment,
@@ -783,17 +801,28 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
       body: JSON.stringify(payload),
     });
     if (!res.ok) throw new Error("Webhook request failed");
+
+    const contentType = res.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      return (await res.json()) as { diagnostico?: string };
+    }
+    const text = await res.text();
+    try {
+      return JSON.parse(text) as { diagnostico?: string };
+    } catch {
+      return { diagnostico: text };
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await submit();
-      setSubmitted(isQualified() ? "qualified" : "unqualified");
+      const data = await submit();
+      setDiagnostico((data?.diagnostico || "").toString());
       createConfetti();
     } catch {
-      setSubmitted(null);
+      setDiagnostico(null);
     } finally {
       setLoading(false);
     }
@@ -838,56 +867,64 @@ const MultiStepForm = ({ triggerProgress }: { triggerProgress: () => void }) => 
 
         <div className="min-h-[320px]">
           <AnimatePresence mode="wait">
-            {submitted ? (
+            {diagnostico !== null ? (
               <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                key="diagnostico"
+                initial={{ opacity: 0, scale: 0.98, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                className="py-6"
+              >
+                <div className="mb-6 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Resultado</p>
+                    <h3 className="mt-2 text-3xl font-black text-white">Diagnóstico</h3>
+                    <p className="mt-2 text-gray-400">Análisis generado y firmado por Ramiz AI.</p>
+                  </div>
+                  <div className="hidden md:flex h-12 w-12 items-center justify-center border border-purple-500/30 bg-purple-500/10 text-purple-300">
+                    <Bot className="h-6 w-6" />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-black/30 p-6">
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed text-gray-200">{diagnostico || ""}</div>
+                </div>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  {segment === "Student" ? (
+                    <p className="text-sm font-semibold text-gray-400">Te avisaremos cuando abran los cupos.</p>
+                  ) : (
+                    <Button
+                      asChild
+                      className="rounded-none bg-white px-8 py-6 text-sm font-bold text-black transition-transform hover:scale-[1.02] hover:bg-gray-200"
+                    >
+                      <a href={CONSULT_CAL_URL} target="_blank" rel="noreferrer">
+                        Agendar Consultoría <ArrowRight className="ml-2 h-4 w-4" />
+                      </a>
+                    </Button>
+                  )}
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={resetAll}
+                    className="rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
+                  >
+                    Enviar otro
+                  </Button>
+                </div>
+              </motion.div>
+            ) : loading ? (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col items-center justify-center py-16 text-center"
               >
-                {submitted === "qualified" ? (
-                  <>
-                    <div className="mb-6 flex h-24 w-24 items-center justify-center border border-cyan-500/30 bg-cyan-500/10 text-cyan-300">
-                      <CheckCircle2 className="h-10 w-10" />
-                    </div>
-                    <h3 className="mb-2 text-3xl font-black">Perfecto.</h3>
-                    <p className="max-w-xl text-gray-400">Agenda tu llamada y lo aterrizamos con claridad.</p>
-                    <div className="mt-8 w-full overflow-hidden rounded-2xl border border-white/10 bg-black/30">
-                      <iframe title="Agenda Ramiz" src={CAL_IFRAME_SRC} className="h-[720px] w-full" loading="lazy" />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="mb-6 flex h-24 w-24 items-center justify-center border border-purple-500/30 bg-purple-500/10 text-purple-300">
-                      <Check className="h-10 w-10" />
-                    </div>
-                    <h3 className="mb-2 text-3xl font-black">Listo.</h3>
-                    <p className="max-w-xl text-gray-400">Ya recibí tu info. Mientras tanto, aquí me encuentras:</p>
-                    <div className="mt-8 flex items-center justify-center gap-4">
-                      <a
-                        href="https://instagram.com/ramiz.componte"
-                        className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white/90 hover:bg-white/5"
-                      >
-                        <Instagram className="h-4 w-4" /> Instagram
-                      </a>
-                      <a
-                        href="https://www.tiktok.com/@ramiz.componte"
-                        className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold text-white/90 hover:bg-white/5"
-                      >
-                        <TikTokIcon className="h-4 w-4" /> TikTok
-                      </a>
-                    </div>
-                  </>
-                )}
-
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={resetAll}
-                  className="mt-10 rounded-none border-b-2 border-transparent px-0 text-gray-400 hover:border-gray-400 hover:bg-transparent hover:text-white"
-                >
-                  Enviar otro
-                </Button>
+                <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-black/30">
+                  <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/15 border-t-purple-400" />
+                </div>
+                <p className="text-sm font-semibold text-gray-200">{loadingPhrases[loadingPhraseIndex]}</p>
+                <p className="mt-2 text-xs text-gray-500">Puede tardar 5–10 segundos.</p>
               </motion.div>
             ) : step === 0 ? (
               <motion.div key="pick" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
