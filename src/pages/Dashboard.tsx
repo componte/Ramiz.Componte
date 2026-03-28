@@ -44,7 +44,7 @@ const AGENT_AVATAR_URL =
 
 const CAL_IFRAME_SRC = "https://cal.com/componte-dryjsc/agenda-ramiz";
 
-const CONSULT_CAL_URL = "https://www.google.com/url?sa=E&source=gmail&q=Cal.com";
+const CONSULT_CAL_URL = "https://cal.com/componte-dryjsc/agenda-ramiz";
 
 const staggerContainer = {
   hidden: { opacity: 0 },
